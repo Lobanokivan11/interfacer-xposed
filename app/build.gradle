@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
+    compileSdk 25
     buildToolsVersion "25.0.2"
 
     lintOptions {
@@ -18,8 +18,10 @@ android {
 
     defaultConfig {
         applicationId "projekt.interfacer"
-        minSdkVersion 25
-        targetSdkVersion 25
+        minSdk 25
+        targetSdk 25
+        versionCode 62
+        versionName "sixty two"
     }
 
     defaultConfig {
@@ -30,8 +32,8 @@ android {
 
     compileOptions {
         incremental true
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     dexOptions {
@@ -51,6 +53,9 @@ android {
 
     dependencies {
         testCompile 'junit:junit:4.12'
+        implementation 'androidx.core:core-ktx:1.10.1'
+        implementation 'androidx.appcompat:appcompat:1.6.1'
+        implementation 'com.google.android.material:material:1.9.0'
         implementation 'de.robv.android.xposed:api:82'
         implementation 'de.robv.android.xposed:api:82:sources'
     }
