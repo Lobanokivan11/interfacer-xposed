@@ -23,6 +23,11 @@ import android.os.UserHandle;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
+import android.os.Binder;
+import java.io.FileNotFoundException;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageInfo;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
