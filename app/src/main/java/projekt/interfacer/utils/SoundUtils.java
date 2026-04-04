@@ -160,6 +160,13 @@ public class SoundUtils {
     }
 
     public static void setDefaultUISounds(ContentResolver resolver, String soundName, String soundFile) {
-        Settings.Global.putStringForUser(resolver, soundName, "/system/media/audio/ui/" + soundFile, -2);
+        try {
+            java.lang.reflect.Method method = android.provider.Settings.Global.class.getDeclaredMethod(
+                "putStringForUser", android.content.ContentResolver.class, String.class, String.class, int.class);
+            method.invoke(null, resolver, soundName, "/system/media/audio/ui/" + soundFile, -2);
+        } catch (Exception e) {
+            android.provider.Settings.Global.putString(resolver, soundName, "/system/media/audio/ui/" + soundFile);
+            log("Fallback to putString for: " + soundName);
+        }
     }
 }
