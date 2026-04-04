@@ -76,6 +76,116 @@ public class IOUtils implements IXposedHookLoadPackage {
     private static final String AUDIO_CACHE_DIR = THEME_CACHE_DIR + "audio/";
     private static final String BOOTANIMATION_CACHE = THEME_CACHE_DIR + "bootanimation.zip";
 
+    public static void createDirIfNotExists(String dirPath) {
+        File dir = new File(dirPath);
+        if (!dir.exists()) {
+            boolean created = dir.mkdirs();
+            if (!created) {
+                Log.e(TAG, "Could not create directory: " + dirPath);
+            }
+        }
+    }
+
+    public static void bufferedCopy(InputStream source, File dest) {
+        try (BufferedInputStream in = new BufferedInputStream(source);
+             BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(dest))) {
+            byte[] buff = new byte[32 * 1024];
+            int len;
+            while ((len = in.read(buff)) != -1) {
+                out.write(buff, 0, len);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error copying file: " + e);
+        }
+    }
+
+    public static void bufferedCopy(File source, File dest) {
+        try (InputStream in = new BufferedInputStream(new FileInputStream(source));
+             OutputStream out = new BufferedOutputStream(new FileOutputStream(dest))) {
+            byte[] buff = new byte[32 * 1024];
+            int len;
+            while ((len = in.read(buff)) != -1) {
+                out.write(buff, 0, len);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error copying file: " + e);
+        }
+    }
+
+    public static void copyFolder(File source, File dest) {
+        if (!dest.exists()) {
+            boolean created = dest.mkdirs();
+            if (!created) {
+                Log.e(TAG, "Could not create destination folder: " + dest.getAbsolutePath());
+            }
+        }
+
+        File[] files = source.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                try {
+                    File newFile = new File(dest, file.getName());
+                    if (file.isFile()) {
+                        bufferedCopy(file, newFile);
+                    } else {
+                        copyFolder(file, newFile);
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error copying file: " + e);
+                }
+            }
+        }
+    }
+
+    public static void unzip(File source, File destination) {
+        try (ZipInputStream inputStream = new ZipInputStream(new BufferedInputStream(new FileInputStream(source)))) {
+            ZipEntry zipEntry;
+            int count;
+            byte[] buffer = new byte[8192];
+
+            while ((zipEntry = inputStream.getNextEntry()) != null) {
+                File file = new File(destination, zipEntry.getName());
+                File dir = zipEntry.isDirectory() ? file : file.getParentFile();
+
+                if (!dir.isDirectory() && !dir.mkdirs()) {
+                    throw new RuntimeException("Failed to ensure directory: " + dir.getAbsolutePath());
+                }
+
+                if (zipEntry.isDirectory()) {
+                    continue;
+                }
+
+                try (FileOutputStream outputStream = new FileOutputStream(file)) {
+                    while ((count = inputStream.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, count);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error unzipping: " + e);
+        }
+    }
+
+    public static void deleteRecursive(File fileOrDirectory) {
+        if (fileOrDirectory.isDirectory()) {
+            File[] children = fileOrDirectory.listFiles();
+            if (children != null) {
+                for (File child : children) {
+                    deleteRecursive(child);
+                }
+            }
+        }
+        boolean deleted = fileOrDirectory.delete();
+        if (!deleted) {
+            Log.e(TAG, "Could not delete file or directory: " + fileOrDirectory.getAbsolutePath());
+        }
+    }
+
+    public static boolean dirExists(String dirPath) {
+        File dir = new File(dirPath);
+        return dir.exists() && dir.isDirectory();
+    }
+
     private static List<Sound> SOUNDS = Arrays.asList(
         new Sound(AUDIO_CACHE_DIR + "ui/", "Effect_Tick", "Effect_Tick", RingtoneManager.TYPE_RINGTONE),
         new Sound(AUDIO_CACHE_DIR + "ui/", "lock_sound", "Lock"),
@@ -101,7 +211,53 @@ public class IOUtils implements IXposedHookLoadPackage {
                     boolean enable = (boolean) param.args[1];
                     if (isCallerAuthorized(Binder.getCallingUid())) {
                         log("Overlay " + packageName + " will be " + (enable ? "enabled" : "disabled"));
-                        // Логика копирования файлов (внутренняя)
+                        try {
+                            Context overlayContext = context.createPackageContext(packageName, Context.CONTEXT_IGNORE_SECURITY);
+                            if (enable) {
+                                String[] fontFiles = overlayContext.getAssets().list("fonts");
+                                if (fontFiles != null) {
+                                    File fontsDir = new File(FONTS_CACHE_DIR);
+                                    IOUtils.createDirIfNotExists(FONTS_CACHE_DIR);
+                                    for (String fontFile : fontFiles) {
+                                        InputStream in = overlayContext.getAssets().open("fonts/" + fontFile);
+                                        File destFile = new File(fontsDir, fontFile);
+                                        IOUtils.bufferedCopy(in, destFile);
+                                        in.close();
+                                    }
+                                }
+                            } else {
+                                IOUtils.deleteRecursive(new File(FONTS_CACHE_DIR));
+                            }
+                            if (enable) {
+                                String[] audioTypes = {"ui", "ringtones", "notifications", "alarms"};
+                                for (String type : audioTypes) {
+                                    String[] soundFiles = overlayContext.getAssets().list("audio/" + type);
+                                    if (soundFiles != null) {
+                                        File typeDir = new File(AUDIO_CACHE_DIR + type);
+                                        IOUtils.createDirIfNotExists(typeDir.getAbsolutePath());
+                                        for (String soundFile : soundFiles) {
+                                            InputStream in = overlayContext.getAssets().open("audio/" + type + "/" + soundFile);
+                                            File destFile = new File(typeDir, soundFile);
+                                            IOUtils.bufferedCopy(in, destFile);
+                                            in.close();
+                                        }
+                                    }
+                                }
+                            } else {
+                                IOUtils.deleteRecursive(new File(AUDIO_CACHE_DIR));
+                            }
+                            if (enable) {
+                                InputStream in = overlayContext.getAssets().open("bootanimation.zip");
+                                File destFile = new File(BOOTANIMATION_CACHE);
+                                IOUtils.bufferedCopy(in, destFile);
+                                in.close();
+                            } else {
+                                new File(BOOTANIMATION_CACHE).delete();
+                            }
+
+                        } catch (Exception e) {
+                            log("Error handling overlay files: " + e);
+                        }
                     }
                 }
             }
