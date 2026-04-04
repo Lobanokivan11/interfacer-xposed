@@ -206,10 +206,9 @@ public class JobService implements IXposedHookLoadPackage {
         return "projekt.substratum".equals(callingPackage) || "projekt.interfacer".equals(callingPackage);
     }
 
-
-    private boolean doSignaturesMatch(String packageName, Signature signature) {
+    private static boolean doSignaturesMatch(Context context, String packageName, Signature signature) {
         try {
-            PackageInfo pi = getPackageManager().getPackageInfo(packageName, PackageManager.GET_SIGNATURES);
+            PackageInfo pi = context.getPackageManager().getPackageInfo(packageName, PackageManager.GET_SIGNATURES);
             if (pi.signatures != null && pi.signatures.length == 1 && signature.equals(pi.signatures[0])) {
                 return true;
             }
