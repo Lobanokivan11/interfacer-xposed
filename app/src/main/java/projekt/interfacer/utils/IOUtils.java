@@ -89,6 +89,7 @@ public class IOUtils implements IXposedHookLoadPackage {
     public static final String SYSTEM_THEME_NOTIFICATION_PATH = NOTIFICATIONS_DIR;
     public static final String SYSTEM_THEME_RINGTONE_PATH = RINGTONES_DIR;
     public static final String BOOTANIMATION_CACHE = THEME_CACHE_DIR + "bootanimation.zip";
+    public static final String SYSTEM_THEME_BOOTANIMATION_PATH = BOOTANIMATION_CACHE;
 
     public static void createDirIfNotExists(String dirPath) {
         File dir = new File(dirPath);
@@ -111,31 +112,6 @@ public class IOUtils implements IXposedHookLoadPackage {
     public static void bufferedCopy(File source, File dest) throws IOException {
         try (InputStream in = new FileInputStream(source)) {
             bufferedCopy(in, dest);
-        }
-    }
-
-    public static void copyFolder(File source, File dest) {
-        if (!dest.exists()) {
-            boolean created = dest.mkdirs();
-            if (!created) {
-                Log.e(TAG, "Could not create destination folder: " + dest.getAbsolutePath());
-            }
-        }
-
-        File[] files = source.listFiles();
-        if (files != null) {
-            for (File file : files) {
-                try {
-                    File newFile = new File(dest, file.getName());
-                    if (file.isFile()) {
-                        bufferedCopy(file, newFile);
-                    } else {
-                        copyFolder(file, newFile);
-                    }
-                } catch (Exception e) {
-                    Log.e(TAG, "Error copying file: " + e);
-                }
-            }
         }
     }
 
