@@ -24,12 +24,6 @@ android {
         versionName "sixty two"
     }
 
-    defaultConfig {
-        jackOptions {
-            enabled true
-        }
-    }
-
     compileOptions {
         incremental true
         sourceCompatibility JavaVersion.VERSION_17
