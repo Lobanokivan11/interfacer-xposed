@@ -309,12 +309,14 @@ public class IOUtils implements IXposedHookLoadPackage {
         if (DEBUG) XposedBridge.log(TAG + ": " + msg);
     }
 
-    private boolean isCallerAuthorized(int uid) {
-        String callingPackage = getPackageManager().getPackagesForUid(uid)[0];
+    private static boolean isCallerAuthorized(Context context, int uid) {
+        String[] packages = context.getPackageManager().getPackagesForUid(uid);
+        if (packages == null || packages.length == 0) return false;
+        String callingPackage = packages[0];
         for (String AUTHORIZED_CALLER : AUTHORIZED_CALLERS) {
             if (TextUtils.equals(callingPackage, AUTHORIZED_CALLER)) {
                 for (Signature AUTHORIZED_SIGNATURE : AUTHORIZED_SIGNATURES) {
-                    if (doSignaturesMatch(callingPackage, AUTHORIZED_SIGNATURE)) {
+                    if (doSignaturesMatch(context, callingPackage, AUTHORIZED_SIGNATURE)) {
                         log("\'" + callingPackage + "\' is an authorized calling package...");
                         return true;
                     }
@@ -325,9 +327,9 @@ public class IOUtils implements IXposedHookLoadPackage {
         return false;
     }
 
-    private boolean doSignaturesMatch(String packageName, Signature signature) {
+    private static boolean doSignaturesMatch(Context context, String packageName, Signature signature) {
         try {
-            PackageInfo pi = getPackageManager().getPackageInfo(packageName, PackageManager.GET_SIGNATURES);
+            PackageInfo pi = context.getPackageManager().getPackageInfo(packageName, PackageManager.GET_SIGNATURES);
             if (pi.signatures != null && pi.signatures.length == 1 && signature.equals(pi.signatures[0])) {
                 return true;
             }
