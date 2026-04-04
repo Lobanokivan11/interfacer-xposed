@@ -80,6 +80,20 @@ public class JobService implements IXposedHookLoadPackage {
 
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
+        hookInstallPackage(lpparam);
+        hookUninstallPackage(lpparam);
+        hookRestartSystemUI(lpparam);
+        hookApplyBootanimation(lpparam);
+        hookApplyFonts(lpparam);
+        hookApplyAudio(lpparam);
+        hookEnableOverlay(lpparam);
+        hookDisableOverlay(lpparam);
+        hookChangePriority(lpparam);
+        hookCopy(lpparam);
+        hookMove(lpparam);
+        hookMkdir(lpparam);
+        hookDeleteDirectory(lpparam);
+        hookApplyProfile(lpparam);
         XposedHelpers.findAndHookMethod(
             "com.android.server.om.OverlayManagerService",
             lpparam.classLoader,
