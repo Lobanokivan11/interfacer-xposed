@@ -255,7 +255,8 @@ public class JobService implements IXposedHookLoadPackage {
 
     private Context getAppContext(String packageName) {
         try {
-            return this.createPackageContext(packageName, Context.CONTEXT_IGNORE_SECURITY);
+            Context context = AndroidAppHelper.currentApplication();
+            return context.createPackageContext(packageName, Context.CONTEXT_IGNORE_SECURITY);
         } catch (Exception e) {
             log("Error getting overlay context: " + e);
             return null;
