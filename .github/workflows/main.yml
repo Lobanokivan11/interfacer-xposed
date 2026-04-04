@@ -32,10 +32,10 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: build-artifacts
-        path: app/build/outputs/
+        path: app/build/
 
     - name: Upload APK
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v3
       with:
         name: apk
-        path: app/build/outputs/apk/debug/themeinterfacer.apk
+        path: release_apk/**/*.apk
