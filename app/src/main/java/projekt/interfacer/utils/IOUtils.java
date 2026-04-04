@@ -49,7 +49,26 @@ public class IOUtils implements IXposedHookLoadPackage {
     private static final String SUBSTRATUM_PACKAGE = "projekt.substratum";
     private static final String INTERFACER_PACKAGE = "projekt.interfacer";
     private static final String[] AUTHORIZED_CALLERS = {INTERFACER_PACKAGE, SUBSTRATUM_PACKAGE};
-    private static final Signature SUBSTRATUM_SIGNATURE = new Signature("..."); // ваша подпись
+    private static final Signature SUBSTRATUM_SIGNATURE = new Signature(""
+            + "308202eb308201d3a003020102020411c02f2f300d06092a864886f70d01010b050030263124302206"
+            + "03550403131b5375627374726174756d20446576656c6f706d656e74205465616d301e170d31363037"
+            + "30333032333335385a170d3431303632373032333335385a3026312430220603550403131b53756273"
+            + "74726174756d20446576656c6f706d656e74205465616d30820122300d06092a864886f70d01010105"
+            + "000382010f003082010a02820101008855626336f645a335aa5d40938f15db911556385f72f72b5f8b"
+            + "ad01339aaf82ae2d30302d3f2bba26126e8da8e76a834e9da200cdf66d1d5977c90a4e4172ce455704"
+            + "a22bbe4a01b08478673b37d23c34c8ade3ec040a704da8570d0a17fce3c7397ea63ebcde3a2a3c7c5f"
+            + "983a163e4cd5a1fc80c735808d014df54120e2e5708874739e22e5a22d50e1c454b2ae310b480825ab"
+            + "3d877f675d6ac1293222602a53080f94e4a7f0692b627905f69d4f0bb1dfd647e281cc0695e0733fa3"
+            + "efc57d88706d4426c4969aff7a177ac2d9634401913bb20a93b6efe60e790e06dad3493776c2c0878c"
+            + "e82caababa183b494120edde3d823333efd464c8aea1f51f330203010001a321301f301d0603551d0e"
+            + "04160414203ec8b075d1c9eb9d600100281c3924a831a46c300d06092a864886f70d01010b05000382"
+            + "01010042d4bd26d535ce2bf0375446615ef5bf25973f61ecf955bdb543e4b6e6b5d026fdcab09fec09"
+            + "c747fb26633c221df8e3d3d0fe39ce30ca0a31547e9ec693a0f2d83e26d231386ff45f8e4fd5c06095"
+            + "8681f9d3bd6db5e940b1e4a0b424f5c463c79c5748a14a3a38da4dd7a5499dcc14a70ba82a50be5fe0"
+            + "82890c89a27e56067d2eae952e0bcba4d6beb5359520845f1fdb7df99868786055555187ba46c69ee6"
+            + "7fa2d2c79e74a364a8b3544997dc29cc625395e2f45bf8bdb2c9d8df0d5af1a59a58ad08b32cdbec38"
+            + "19fa49201bb5b5aadeee8f2f096ac029055713b77054e8af07cd61fe97f7365d0aa92d570be98acb89"
+            + "41b8a2b0053b54f18bfde092eb");
     private static final Signature[] AUTHORIZED_SIGNATURES = {SUBSTRATUM_SIGNATURE};
     private static final String MODULE_DATA_DIR = "/data/data/projekt.interfacer/";
     private static final String THEME_CACHE_DIR = MODULE_DATA_DIR + "theme/";
