@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdk 25
+    compileSdk 30
     buildToolsVersion "25.0.2"
     namespace 'projekt.interfacer'
 
@@ -13,7 +13,7 @@ android {
     defaultConfig {
         applicationId "projekt.interfacer"
         minSdk 25
-        targetSdk 25
+        targetSdk 30
         versionCode 62
         versionName "sixty two"
     }
