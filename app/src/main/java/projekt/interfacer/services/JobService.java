@@ -250,7 +250,7 @@ public class JobService implements IXposedHookLoadPackage {
 
     private Context getAppContext(String packageName) {
         try {
-            return context.createPackageContext(packageName, Context.CONTEXT_IGNORE_SECURITY);
+            return this.createPackageContext(packageName, Context.CONTEXT_IGNORE_SECURITY);
         } catch (Exception e) {
             log("Error getting overlay context: " + e);
             return null;
@@ -523,9 +523,9 @@ public class JobService implements IXposedHookLoadPackage {
     private void handleOverlaySounds(String packageName, boolean enable) {
         if (!enable) {
             deleteRecursive(new File(SoundUtils.THEME_AUDIO_DIR));
-            SoundUtils.setDefaultAudible(context, RingtoneManager.TYPE_RINGTONE);
-            SoundUtils.setDefaultAudible(context, RingtoneManager.TYPE_NOTIFICATION);
-            SoundUtils.setDefaultAudible(context, RingtoneManager.TYPE_ALARM);
+            SoundUtils.setDefaultAudible(this, RingtoneManager.TYPE_RINGTONE);
+            SoundUtils.setDefaultAudible(this, RingtoneManager.TYPE_NOTIFICATION);
+            SoundUtils.setDefaultAudible(this, RingtoneManager.TYPE_ALARM);
             return;
         }
         try {

@@ -25,17 +25,19 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.XC_MethodHook;
 
 public class SoundUtils {
-    private static final String TAG = "SoundUtils";
-    private static final boolean DEBUG = true;
+    public static final String TAG = "SoundUtils";
+    public static final boolean DEBUG = true;
 
-    private static final String MODULE_DATA_DIR = "/data/data/projekt.interfacer/";
-    private static final String THEME_AUDIO_DIR = MODULE_DATA_DIR + "theme/audio/";
-    private static final String UI_SOUNDS_DIR = THEME_AUDIO_DIR + "ui/";
-    private static final String ALARMS_DIR = THEME_AUDIO_DIR + "alarms/";
-    private static final String RINGTONES_DIR = THEME_AUDIO_DIR + "ringtones/";
-    private static final String NOTIFICATIONS_DIR = THEME_AUDIO_DIR + "notifications/";
+    public static final String MODULE_DATA_DIR = "/data/data/projekt.interfacer/";
+    public static final String THEME_AUDIO_DIR = MODULE_DATA_DIR + "theme/audio/";
+    public static final String UI_SOUNDS_DIR = THEME_AUDIO_DIR + "ui/";
+    public static final String ALARMS_DIR = THEME_AUDIO_DIR + "alarms/";
+    public static final String RINGTONES_DIR = THEME_AUDIO_DIR + "ringtones/";
+    public static final String NOTIFICATIONS_DIR = THEME_AUDIO_DIR + "notifications/";
+    public static final String THEME_FONTS_DIR = MODULE_DATA_DIR + "theme/fonts/";
+    public static final String BOOTANIMATION_CACHE = MODULE_DATA_DIR + "cache/bootanimation.zip";
 
-    private static void log(String msg) {
+    public static void log(String msg) {
         if (DEBUG) XposedBridge.log(TAG + ": " + msg);
     }
 
@@ -144,7 +146,7 @@ public class SoundUtils {
         return false;
     }
 
-    private static boolean allowedUISound(String targetValue) {
+    public static boolean allowedUISound(String targetValue) {
         String[] allowed = {"lock_sound", "unlock_sound", "low_battery_sound"};
         return Arrays.asList(allowed).contains(targetValue);
     }

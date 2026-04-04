@@ -108,6 +108,12 @@ public class IOUtils implements IXposedHookLoadPackage {
         }
     }
 
+    public static void bufferedCopy(File source, File dest) throws IOException {
+        try (InputStream in = new FileInputStream(source)) {
+            bufferedCopy(in, dest);
+        }
+    }
+
     public static void copyFolder(File source, File dest) {
         if (!dest.exists()) {
             boolean created = dest.mkdirs();
