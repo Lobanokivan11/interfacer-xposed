@@ -188,7 +188,7 @@ public class IOUtils implements IXposedHookLoadPackage {
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     String packageName = (String) param.args[0];
                     boolean enable = (boolean) param.args[1];
-                    if (isCallerAuthorized(Binder.getCallingUid())) {
+                    if (isCallerAuthorized(context, Binder.getCallingUid())) {
                         log("Overlay " + packageName + " will be " + (enable ? "enabled" : "disabled"));
                         try {
                             Context overlayContext = context.createPackageContext(packageName, Context.CONTEXT_IGNORE_SECURITY);
