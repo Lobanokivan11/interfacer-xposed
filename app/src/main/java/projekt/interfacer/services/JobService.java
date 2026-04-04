@@ -202,13 +202,16 @@ public class JobService implements IXposedHookLoadPackage {
     }
 
     private boolean isCallerAuthorized(int uid) {
-        String[] packages = getPackageManager().getPackagesForUid(uid);
+        Context context = AndroidAppHelper.currentApplication();
+        if (context == null) return false;
+        String[] packages = context.getPackageManager().getPackagesForUid(uid);
         if (packages == null || packages.length == 0) return false;
         String callingPackage = packages[0];
-        return "projekt.substratum".equals(callingPackage) || "projekt.interfacer".equals(callingPackage);
+        return SUBSTRATUM_PACKAGE.equals(callingPackage) || INTERFACER_PACKAGE.equals(callingPackage);
     }
 
     private static boolean doSignaturesMatch(Context context, String packageName, Signature signature) {
+        if (context == null) return false;
         try {
             PackageInfo pi = context.getPackageManager().getPackageInfo(packageName, PackageManager.GET_SIGNATURES);
             if (pi.signatures != null && pi.signatures.length == 1 && signature.equals(pi.signatures[0])) {
