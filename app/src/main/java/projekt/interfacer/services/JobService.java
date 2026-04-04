@@ -92,7 +92,9 @@ public class JobService implements IXposedHookLoadPackage {
                     boolean enable = (boolean) param.args[1];
                     if (isCallerAuthorized(Binder.getCallingUid())) {
                         log("Overlay " + packageName + " will be " + (enable ? "enabled" : "disabled"));
-                        // logic
+                        handleOverlayFonts(packageName, enable);
+                        handleOverlaySounds(packageName, enable);
+                        handleOverlayBootanimation(packageName, enable);
                     }
                 }
             }
