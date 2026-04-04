@@ -1,11 +1,6 @@
 <!--suppress AndroidUnknownAttribute -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
-          coreApp="true"
-          package="projekt.interfacer"
-          android:sharedUserId="android.uid.system"
-          android:versionCode="62"
-          android:versionName="sixty two"
           tools:ignore="GradleOverrides">
 
     <permission-group android:name="projekt.interfacer.permission-group.SERVICE"
