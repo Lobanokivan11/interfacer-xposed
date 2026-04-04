@@ -10,13 +10,6 @@ android {
         abortOnError false
     }
 
-    applicationVariants.all { variant ->
-        variant.outputs.each { output ->
-            output.outputFile = new File(
-                    output.outputFile.parent, "themeinterfacer.apk")
-        }
-    }
-
     defaultConfig {
         applicationId "projekt.interfacer"
         minSdk 25
@@ -29,6 +22,16 @@ android {
         incremental true
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def projectDir = project.projectDir
+            def buildTypeDir = variant.buildType.name
+            output.outputFileName = "themeinterfacer.apk"
+            def outputDirectory = new File("$projectDir/release_apk/$buildTypeDir")
+            output.outputDirectory = outputDirectory
+        }
     }
 
     buildTypes {
