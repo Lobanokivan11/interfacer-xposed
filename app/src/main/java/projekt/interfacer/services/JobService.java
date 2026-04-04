@@ -217,13 +217,13 @@ public class JobService implements IXposedHookLoadPackage {
 
     private void handleOverlayFonts(String packageName, boolean enable) {
         if (!enable) {
-            deleteRecursive(new File(SoundUtilsXposed.THEME_FONTS_DIR));
+            deleteRecursive(new File(SoundUtils.THEME_FONTS_DIR));
             return;
         }
         try {
             Context overlayContext = getAppContext(packageName);
             if (overlayContext == null) return;
-            File fontsDir = new File(SoundUtilsXposed.THEME_FONTS_DIR);
+            File fontsDir = new File(SoundUtils.THEME_FONTS_DIR);
             if (!fontsDir.exists()) fontsDir.mkdirs();
             String[] fontFiles = overlayContext.getAssets().list("fonts");
             if (fontFiles != null) {
@@ -267,14 +267,14 @@ public class JobService implements IXposedHookLoadPackage {
 
     private void handleOverlayBootanimation(String packageName, boolean enable) {
         if (!enable) {
-            new File(SoundUtilsXposed.BOOTANIMATION_CACHE).delete();
+            new File(SoundUtils.BOOTANIMATION_CACHE).delete();
             return;
         }
         try {
             Context overlayContext = getAppContext(packageName);
             if (overlayContext == null) return;
             try (InputStream in = overlayContext.getAssets().open("bootanimation.zip");
-                OutputStream out = new FileOutputStream(SoundUtilsXposed.BOOTANIMATION_CACHE)) {
+                OutputStream out = new FileOutputStream(SoundUtils.BOOTANIMATION_CACHE)) {
                 byte[] buf = new byte[8192];
                 int len;
                 while ((len = in.read(buf)) > 0) {
@@ -521,16 +521,16 @@ public class JobService implements IXposedHookLoadPackage {
 
     private void handleOverlaySounds(String packageName, boolean enable) {
         if (!enable) {
-            deleteRecursive(new File(SoundUtilsXposed.THEME_AUDIO_DIR));
-            SoundUtilsXposed.setDefaultAudible(context, RingtoneManager.TYPE_RINGTONE);
-            SoundUtilsXposed.setDefaultAudible(context, RingtoneManager.TYPE_NOTIFICATION);
-            SoundUtilsXposed.setDefaultAudible(context, RingtoneManager.TYPE_ALARM);
+            deleteRecursive(new File(SoundUtils.THEME_AUDIO_DIR));
+            SoundUtils.setDefaultAudible(context, RingtoneManager.TYPE_RINGTONE);
+            SoundUtils.setDefaultAudible(context, RingtoneManager.TYPE_NOTIFICATION);
+            SoundUtils.setDefaultAudible(context, RingtoneManager.TYPE_ALARM);
             return;
         }
         try {
             Context overlayContext = getAppContext(packageName);
             if (overlayContext == null) return;
-            File audioDir = new File(SoundUtilsXposed.THEME_AUDIO_DIR);
+            File audioDir = new File(SoundUtils.THEME_AUDIO_DIR);
             if (!audioDir.exists()) audioDir.mkdirs();
             String[] audioTypes = {"ringtones", "notifications", "alarms", "ui"};
             for (String type : audioTypes) {
@@ -557,22 +557,22 @@ public class JobService implements IXposedHookLoadPackage {
     }
 
     private void applyOverlaySounds() {
-        File ringtone = new File(SoundUtilsXposed.RINGTONES_DIR + "ringtone.ogg");
+        File ringtone = new File(SoundUtils.RINGTONES_DIR + "ringtone.ogg");
         if (ringtone.exists()) {
-            SoundUtilsXposed.setAudible(context, ringtone, RingtoneManager.TYPE_RINGTONE, "Substratum Ringtone");
+            SoundUtils.setAudible(context, ringtone, RingtoneManager.TYPE_RINGTONE, "Substratum Ringtone");
         }
 
-        File notification = new File(SoundUtilsXposed.NOTIFICATIONS_DIR + "notification.ogg");
+        File notification = new File(SoundUtils.NOTIFICATIONS_DIR + "notification.ogg");
         if (notification.exists()) {
-            SoundUtilsXposed.setAudible(context, notification, RingtoneManager.TYPE_NOTIFICATION, "Substratum Notification");
+            SoundUtils.setAudible(context, notification, RingtoneManager.TYPE_NOTIFICATION, "Substratum Notification");
         }
-        File alarm = new File(SoundUtilsXposed.ALARMS_DIR + "alarm.ogg");
+        File alarm = new File(SoundUtils.ALARMS_DIR + "alarm.ogg");
         if (alarm.exists()) {
-            SoundUtilsXposed.setAudible(context, alarm, RingtoneManager.TYPE_ALARM, "Substratum Alarm");
+            SoundUtils.setAudible(context, alarm, RingtoneManager.TYPE_ALARM, "Substratum Alarm");
         }
-        SoundUtilsXposed.setUISounds(context.getContentResolver(), "lock_sound", SoundUtilsXposed.UI_SOUNDS_DIR + "lock_sound.ogg");
-        SoundUtilsXposed.setUISounds(context.getContentResolver(), "unlock_sound", SoundUtilsXposed.UI_SOUNDS_DIR + "unlock_sound.ogg");
-        SoundUtilsXposed.setUISounds(context.getContentResolver(), "low_battery_sound", SoundUtilsXposed.UI_SOUNDS_DIR + "low_battery.ogg");
+        SoundUtils.setUISounds(context.getContentResolver(), "lock_sound", SoundUtils.UI_SOUNDS_DIR + "lock_sound.ogg");
+        SoundUtils.setUISounds(context.getContentResolver(), "unlock_sound", SoundUtils.UI_SOUNDS_DIR + "unlock_sound.ogg");
+        SoundUtils.setUISounds(context.getContentResolver(), "low_battery_sound", SoundUtils.UI_SOUNDS_DIR + "low_battery.ogg");
     }
 
     private void copyFonts(String pid, String zipFileName) {
