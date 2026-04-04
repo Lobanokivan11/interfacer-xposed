@@ -50,12 +50,12 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 public class IOUtils implements IXposedHookLoadPackage {
-    private static final String TAG = "SubstratumXposed";
-    private static final boolean DEBUG = true;
-    private static final String SUBSTRATUM_PACKAGE = "projekt.substratum";
-    private static final String INTERFACER_PACKAGE = "projekt.interfacer";
-    private static final String[] AUTHORIZED_CALLERS = {INTERFACER_PACKAGE, SUBSTRATUM_PACKAGE};
-    private static final Signature SUBSTRATUM_SIGNATURE = new Signature(""
+    public static final String TAG = "SubstratumXposed";
+    public static final boolean DEBUG = true;
+    public static final String SUBSTRATUM_PACKAGE = "projekt.substratum";
+    public static final String INTERFACER_PACKAGE = "projekt.interfacer";
+    public static final String[] AUTHORIZED_CALLERS = {INTERFACER_PACKAGE, SUBSTRATUM_PACKAGE};
+    public static final Signature SUBSTRATUM_SIGNATURE = new Signature(""
             + "308202eb308201d3a003020102020411c02f2f300d06092a864886f70d01010b050030263124302206"
             + "03550403131b5375627374726174756d20446576656c6f706d656e74205465616d301e170d31363037"
             + "30333032333335385a170d3431303632373032333335385a3026312430220603550403131b53756273"
@@ -75,20 +75,20 @@ public class IOUtils implements IXposedHookLoadPackage {
             + "7fa2d2c79e74a364a8b3544997dc29cc625395e2f45bf8bdb2c9d8df0d5af1a59a58ad08b32cdbec38"
             + "19fa49201bb5b5aadeee8f2f096ac029055713b77054e8af07cd61fe97f7365d0aa92d570be98acb89"
             + "41b8a2b0053b54f18bfde092eb");
-    private static final Signature[] AUTHORIZED_SIGNATURES = {SUBSTRATUM_SIGNATURE};
-    private static final String MODULE_DATA_DIR = "/data/data/projekt.interfacer/";
-    private static final String THEME_CACHE_DIR = MODULE_DATA_DIR + "theme/";
-    private static final String FONTS_CACHE_DIR = THEME_CACHE_DIR + "fonts/";
-    private static final String AUDIO_CACHE_DIR = THEME_CACHE_DIR + "audio/";
-    private static final String UI_SOUNDS_DIR = AUDIO_CACHE_DIR + "ui/";
-    private static final String ALARMS_DIR = AUDIO_CACHE_DIR + "alarms/";
-    private static final String RINGTONES_DIR = AUDIO_CACHE_DIR + "ringtones/";
-    private static final String NOTIFICATIONS_DIR = AUDIO_CACHE_DIR + "notifications/";
-    public static final String SYSTEM_THEME_UI_SOUNDS_PATH = AUDIO_CACHE_DIR + "ui/";
-    public static final String SYSTEM_THEME_ALARM_PATH = AUDIO_CACHE_DIR + "alarms/";
-    public static final String SYSTEM_THEME_NOTIFICATION_PATH = AUDIO_CACHE_DIR + "notifications/";
-    public static final String SYSTEM_THEME_RINGTONE_PATH = AUDIO_CACHE_DIR + "ringtones/";
-    private static final String BOOTANIMATION_CACHE = THEME_CACHE_DIR + "bootanimation.zip";
+    public static final Signature[] AUTHORIZED_SIGNATURES = {SUBSTRATUM_SIGNATURE};
+    public static final String MODULE_DATA_DIR = "/data/data/projekt.interfacer/";
+    public static final String THEME_CACHE_DIR = MODULE_DATA_DIR + "theme/";
+    public static final String FONTS_CACHE_DIR = THEME_CACHE_DIR + "fonts/";
+    public static final String AUDIO_CACHE_DIR = THEME_CACHE_DIR + "audio/";
+    public static final String UI_SOUNDS_DIR = AUDIO_CACHE_DIR + "ui/";
+    public static final String ALARMS_DIR = AUDIO_CACHE_DIR + "alarms/";
+    public static final String RINGTONES_DIR = AUDIO_CACHE_DIR + "ringtones/";
+    public static final String NOTIFICATIONS_DIR = AUDIO_CACHE_DIR + "notifications/";
+    public static final String SYSTEM_THEME_UI_SOUNDS_PATH = UI_SOUNDS_DIR;
+    public static final String SYSTEM_THEME_ALARM_PATH = ALARMS_DIR;
+    public static final String SYSTEM_THEME_NOTIFICATION_PATH = NOTIFICATIONS_DIR;
+    public static final String SYSTEM_THEME_RINGTONE_PATH = RINGTONES_DIR;
+    public static final String BOOTANIMATION_CACHE = THEME_CACHE_DIR + "bootanimation.zip";
 
     public static void createDirIfNotExists(String dirPath) {
         File dir = new File(dirPath);
@@ -188,7 +188,7 @@ public class IOUtils implements IXposedHookLoadPackage {
         return dir.exists() && dir.isDirectory();
     }
 
-    private static List<Sound> SOUNDS = Arrays.asList(
+    public static List<Sound> SOUNDS = Arrays.asList(
         new Sound(AUDIO_CACHE_DIR + "ui/", "Effect_Tick", "Effect_Tick", RingtoneManager.TYPE_RINGTONE),
         new Sound(AUDIO_CACHE_DIR + "ui/", "lock_sound", "Lock"),
         new Sound(AUDIO_CACHE_DIR + "ui/", "unlock_sound", "Unlock"),
@@ -329,7 +329,7 @@ public class IOUtils implements IXposedHookLoadPackage {
         );
     }
 
-    private static void log(String msg) {
+    public static void log(String msg) {
         if (DEBUG) XposedBridge.log(TAG + ": " + msg);
     }
 
@@ -359,7 +359,7 @@ public class IOUtils implements IXposedHookLoadPackage {
         return false;
     }
 
-    private static void copyFolder(File source, File dest) {
+    public static void copyFolder(File source, File dest) {
         if (!dest.exists()) {
             boolean created = dest.mkdirs();
             if (!created) {
@@ -381,7 +381,7 @@ public class IOUtils implements IXposedHookLoadPackage {
         }
     }
 
-    private static void unzip(String source, String destination) {
+    public static void unzip(String source, String destination) {
         try (ZipInputStream inputStream = new ZipInputStream(new BufferedInputStream(new FileInputStream(source)))) {
             ZipEntry zipEntry;
             int count;
@@ -406,7 +406,7 @@ public class IOUtils implements IXposedHookLoadPackage {
         }
     }
 
-    private static class Sound {
+    public static class Sound {
         String themePath;
         String soundName;
         String soundPath;
