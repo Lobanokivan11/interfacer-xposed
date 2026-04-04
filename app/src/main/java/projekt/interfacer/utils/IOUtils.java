@@ -91,19 +91,6 @@ public class IOUtils implements IXposedHookLoadPackage {
         }
     }
 
-    public static void bufferedCopy(InputStream source, File dest) {
-        try (BufferedInputStream in = new BufferedInputStream(source);
-             BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(dest))) {
-            byte[] buff = new byte[32 * 1024];
-            int len;
-            while ((len = in.read(buff)) != -1) {
-                out.write(buff, 0, len);
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "Error copying file: " + e);
-        }
-    }
-
     public static void bufferedCopy(File source, File dest) {
         try (InputStream in = new BufferedInputStream(new FileInputStream(source));
              OutputStream out = new BufferedOutputStream(new FileOutputStream(dest))) {
@@ -381,19 +368,6 @@ public class IOUtils implements IXposedHookLoadPackage {
             } catch (Exception e) {
                 log("Error copying file: " + e);
             }
-        }
-    }
-
-    private static void bufferedCopy(File source, File dest) {
-        try (InputStream in = new BufferedInputStream(new FileInputStream(source));
-             OutputStream out = new BufferedOutputStream(new FileOutputStream(dest))) {
-            byte[] buff = new byte[32 * 1024];
-            int len;
-            while ((len = in.read(buff)) != -1) {
-                out.write(buff, 0, len);
-            }
-        } catch (Exception e) {
-            log("Error copying file: " + e);
         }
     }
 
