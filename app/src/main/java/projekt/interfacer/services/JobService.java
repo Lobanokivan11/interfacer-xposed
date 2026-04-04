@@ -40,7 +40,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import projekt.interfacer.utils.IOUtils;
 import projekt.interfacer.utils.SoundUtils;
 
-public class SubstratumXposed implements IXposedHookLoadPackage {
+public class JobService implements IXposedHookLoadPackage {
     private static final String TAG = "SubstratumXposed";
     private static final boolean DEBUG = true;
     private static final String SUBSTRATUM_PACKAGE = "projekt.substratum";
