@@ -130,7 +130,7 @@ public class SoundUtils {
 
     public static boolean setUISounds(ContentResolver resolver, String soundName, String location) {
         if (allowedUISound(soundName)) {
-            Settings.Global.putStringForUser(resolver, soundName, location, UserHandle.USER_CURRENT);
+            Settings.Global.putStringForUser(resolver, soundName, location, -2);
             return true;
         }
         return false;
@@ -150,6 +150,6 @@ public class SoundUtils {
     }
 
     public static void setDefaultUISounds(ContentResolver resolver, String soundName, String soundFile) {
-        Settings.Global.putStringForUser(resolver, soundName, "/system/media/audio/ui/" + soundFile, UserHandle.USER_CURRENT);
+        Settings.Global.putStringForUser(resolver, soundName, "/system/media/audio/ui/" + soundFile, -2);
     }
 }
