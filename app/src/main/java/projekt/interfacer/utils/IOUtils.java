@@ -251,7 +251,7 @@ public class IOUtils implements IXposedHookLoadPackage {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     String packageName = (String) param.args[0];
-                    if (isCallerAuthorized(Binder.getCallingUid())) {
+                    if (isCallerAuthorized(context, Binder.getCallingUid())) {
                         log("Package " + packageName + " installed");
                     }
                 }
@@ -265,7 +265,7 @@ public class IOUtils implements IXposedHookLoadPackage {
             new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    if (isCallerAuthorized(Binder.getCallingUid())) {
+                    if (isCallerAuthorized(context, Binder.getCallingUid())) {
                         log("Fonts refreshed");
                     }
                 }
@@ -280,7 +280,7 @@ public class IOUtils implements IXposedHookLoadPackage {
             new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    if (isCallerAuthorized(Binder.getCallingUid())) {
+                    if (isCallerAuthorized(context, Binder.getCallingUid())) {
                         int type = (int) param.args[1];
                         Uri uri = (Uri) param.args[2];
                         log("Setting default ringtone for type " + type + " to " + uri);
@@ -298,7 +298,7 @@ public class IOUtils implements IXposedHookLoadPackage {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     String processName = (String) param.args[0];
-                    if ("com.android.systemui".equals(processName) && isCallerAuthorized(Binder.getCallingUid())) {
+                    if ("com.android.systemui".equals(processName) && isCallerAuthorized(context, Binder.getCallingUid())) {
                         log("Restarting SystemUI");
                     }
                 }
