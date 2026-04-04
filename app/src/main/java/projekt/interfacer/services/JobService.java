@@ -7,6 +7,7 @@ package projekt.interfacer.services;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Binder;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
