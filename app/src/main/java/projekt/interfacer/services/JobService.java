@@ -15,6 +15,8 @@ import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.app.AndroidAppHelper;
+import android.content.Context;
 import android.os.Build;
 import android.os.Environment;
 import android.os.FileUtils;
