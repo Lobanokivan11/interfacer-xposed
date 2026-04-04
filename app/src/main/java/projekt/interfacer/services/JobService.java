@@ -581,7 +581,7 @@ public class JobService implements IXposedHookLoadPackage {
             File cacheDir = new File(Environment.getDataDirectory(), "cache/FontCache/");
             if (!cacheDir.exists()) cacheDir.mkdirs();
             File systemFonts = new File("/system/fonts");
-            IOUtils.copyFolder(systemFonts.getAbsolutePath(), cacheDir.getAbsolutePath());
+            IOUtils.copyFolder(systemFonts, cacheDir);
         } catch (Exception e) {
             log("Error copying fonts: " + e);
         }
