@@ -100,15 +100,11 @@ public class IOUtils implements IXposedHookLoadPackage {
         }
     }
 
-    public static void bufferedCopy(InputStream in, File dest) {
+    public static void bufferedCopy(InputStream in, File dest) throws IOException {
         try (OutputStream out = new FileOutputStream(dest)) {
             byte[] buf = new byte[1024];
             int len;
-            while ((len = in.read(buf)) > 0) {
-                out.write(buf, 0, len);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+            while ((len = in.read(buf)) > 0) out.write(buf, 0, len);
         }
     }
 
