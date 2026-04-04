@@ -277,6 +277,234 @@ public class JobService implements IXposedHookLoadPackage {
         }
     }
 
+    private void hookApplyProfile(XC_LoadPackage.LoadPackageParam lpparam) {
+        XposedHelpers.findAndHookMethod(
+            "com.android.server.om.OverlayManagerService",
+            lpparam.classLoader,
+            "setEnabled",
+            String.class, boolean.class, int.class, boolean.class,
+            new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    String packageName = (String) param.args[0];
+                    log("Applying profile for overlay: " + packageName);
+                }
+            }
+        );
+    }
+
+    private void hookDeleteDirectory(XC_LoadPackage.LoadPackageParam lpparam) {
+        XposedHelpers.findAndHookMethod(
+            "java.io.File",
+            lpparam.classLoader,
+            "delete",
+            new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    File dir = (File) param.thisObject;
+                    log("Deleting directory: " + dir.getAbsolutePath());
+                }
+            }
+        );
+    }
+
+    private void hookMkdir(XC_LoadPackage.LoadPackageParam lpparam) {
+        XposedHelpers.findAndHookMethod(
+            "java.io.File",
+            lpparam.classLoader,
+            "mkdirs",
+            new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    File dir = (File) param.thisObject;
+                    log("Directory created: " + dir.getAbsolutePath());
+                }
+            }
+        );
+    }
+
+    private void hookMove(XC_LoadPackage.LoadPackageParam lpparam) {
+        XposedHelpers.findAndHookMethod(
+            "java.io.File",
+            lpparam.classLoader,
+            "renameTo",
+            File.class,
+            new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    File source = (File) param.thisObject;
+                    File dest = (File) param.args[0];
+                    log("Moving file from " + source.getAbsolutePath() + " to " + dest.getAbsolutePath());
+                }
+            }
+        );
+    }
+
+    private void hookCopy(XC_LoadPackage.LoadPackageParam lpparam) {
+        XposedHelpers.findAndHookMethod(
+            "java.io.File",
+            lpparam.classLoader,
+            "renameTo",
+            File.class,
+            new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    File source = (File) param.thisObject;
+                    File dest = (File) param.args[0];
+                    log("Copying file from " + source.getAbsolutePath() + " to " + dest.getAbsolutePath());
+                }
+            }
+        );
+    }
+
+    private void hookChangePriority(XC_LoadPackage.LoadPackageParam lpparam) {
+        XposedHelpers.findAndHookMethod(
+            "com.android.server.om.OverlayManagerService",
+            lpparam.classLoader,
+            "setPriority",
+            String.class, String.class, int.class,
+            new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    String targetPackage = (String) param.args[0];
+                    String parentPackage = (String) param.args[1];
+                    log("Changing priority for overlay: " + targetPackage);
+                }
+            }
+        );
+    }
+
+    private void hookDisableOverlay(XC_LoadPackage.LoadPackageParam lpparam) {
+        XposedHelpers.findAndHookMethod(
+            "com.android.server.om.OverlayManagerService",
+            lpparam.classLoader,
+            "setEnabled",
+            String.class, boolean.class, int.class, boolean.class,
+            new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    String packageName = (String) param.args[0];
+                    boolean enable = (boolean) param.args[1];
+                    if (!enable) {
+                        log("Overlay disabled: " + packageName);
+                    }
+                }
+            }
+        );
+    }
+
+    private void hookEnableOverlay(XC_LoadPackage.LoadPackageParam lpparam) {
+        XposedHelpers.findAndHookMethod(
+            "com.android.server.om.OverlayManagerService",
+            lpparam.classLoader,
+            "setEnabled",
+            String.class, boolean.class, int.class, boolean.class,
+            new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    String packageName = (String) param.args[0];
+                    boolean enable = (boolean) param.args[1];
+                    if (enable) {
+                        log("Overlay enabled: " + packageName);
+                    }
+                }
+            }
+        );
+    }
+
+    private void hookApplyAudio(XC_LoadPackage.LoadPackageParam lpparam) {
+        XposedHelpers.findAndHookMethod(
+            "android.media.RingtoneManager",
+            lpparam.classLoader,
+            "setActualDefaultRingtoneUri",
+            Context.class, int.class, Uri.class,
+            new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    log("Applying audio");
+                }
+            }
+        );
+    }
+
+    private void hookApplyFonts(XC_LoadPackage.LoadPackageParam lpparam) {
+        XposedHelpers.findAndHookMethod(
+            "android.graphics.Typeface",
+            lpparam.classLoader,
+            "recreateDefaults",
+            new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    log("Fonts applied");
+                }
+            }
+        );
+    }
+
+    private void hookApplyBootanimation(XC_LoadPackage.LoadPackageParam lpparam) {
+        XposedHelpers.findAndHookMethod(
+            "com.android.server.BootAnimation",
+            lpparam.classLoader,
+            "start",
+            new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    log("Applying bootanimation");
+                }
+            }
+        );
+    }
+
+    private void hookRestartSystemUI(XC_LoadPackage.LoadPackageParam lpparam) {
+        XposedHelpers.findAndHookMethod(
+            "com.android.server.am.ActivityManagerService",
+            lpparam.classLoader,
+            "killBackgroundProcesses",
+            String.class,
+            new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    String processName = (String) param.args[0];
+                    if ("com.android.systemui".equals(processName)) {
+                        log("Restarting SystemUI");
+                    }
+                }
+            }
+        );
+    }
+
+    private void hookUninstallPackage(XC_LoadPackage.LoadPackageParam lpparam) {
+        XposedHelpers.findAndHookMethod(
+            "com.android.server.pm.PackageManagerService",
+            lpparam.classLoader,
+            "deletePackageAsUser",
+            String.class, int.class, int.class,
+            new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    String packageName = (String) param.args[0];
+                    log("Package uninstalled: " + packageName);
+                }
+            }
+        );
+    }
+
+    private void hookInstallPackage(XC_LoadPackage.LoadPackageParam lpparam) {
+        XposedHelpers.findAndHookMethod(
+            "com.android.server.pm.PackageManagerService",
+            lpparam.classLoader,
+            "installPackageAsUser",
+            String.class, int.class, String.class, int.class,
+            new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    String packagePath = (String) param.args[0];
+                    log("Package installed: " + packagePath);
+                }
+            }
+        );
+    }
+
     private void handleOverlaySounds(String packageName, boolean enable) {
         if (!enable) {
             deleteRecursive(new File(SoundUtilsXposed.THEME_AUDIO_DIR));
