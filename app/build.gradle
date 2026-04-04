@@ -13,7 +13,7 @@ android {
     applicationVariants.all { variant ->
         variant.outputs.each { output ->
             output.outputFile = new File(
-                    output.outputFile.parent, "themeinterfacer_" + versionCode + ".apk")
+                    output.outputFile.parent, "themeinterfacer.apk")
         }
     }
 
@@ -29,10 +29,6 @@ android {
         incremental true
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
-    }
-
-    dexOptions {
-        javaMaxHeapSize '2048m'
     }
 
     buildTypes {
