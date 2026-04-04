@@ -362,16 +362,6 @@ public class IOUtils implements IXposedHookLoadPackage {
         return false;
     }
 
-    private static void createDirIfNotExists(String dirPath) {
-        File dir = new File(dirPath);
-        if (!dir.exists()) {
-            boolean created = dir.mkdirs();
-            if (!created) {
-                log("Could not create directory: " + dirPath);
-            }
-        }
-    }
-
     private static void copyFolder(File source, File dest) {
         if (!dest.exists()) {
             boolean created = dest.mkdirs();
