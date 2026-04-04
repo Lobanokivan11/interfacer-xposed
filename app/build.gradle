@@ -26,14 +26,7 @@ android {
 
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
-            def projectDir = project.projectDir
-            def buildTypeDir = variant.buildType.name
             output.outputFileName = "themeinterfacer.apk"
-            def outputFileDir = new File("$projectDir/release_apk/$buildTypeDir")
-            if (!outputFileDir.exists()) {
-                outputFileDir.mkdirs()
-            }
-            output.outputFile = new File(outputFileDir, output.outputFileName)
         }
     }
 
@@ -55,5 +48,27 @@ android {
         implementation 'com.google.android.material:material:1.9.0'
         implementation 'de.robv.android.xposed:api:82'
         implementation 'de.robv.android.xposed:api:82:sources'
+    }
+}
+
+tasks.register('copyApk', Copy) {
+    from layouts.projectDirectory.dir("app/build/outputs/apk/debug")
+    into layouts.projectDirectory.dir("release_apk/debug")
+    include "themeinterfacer.apk"
+    rename "themeinterfacer.apk", "themeinterfacer_${new Date().format('yyyyMMddHHmm')}.apk"
+}
+
+tasks.register('buildAndCopyApk') {
+    dependsOn 'assembleDebug', 'copyApk'
+}
+
+tasks.register('createApkDirectory') {
+    def dirDebug = file("release_apk/debug")
+    if (!dirDebug.exists()) {
+        dirDebug.mkdirs()
+    }
+    def dirRelease = file("release_apk/release")
+    if (!dirRelease.exists()) {
+        dirRelease.mkdirs()
     }
 }
