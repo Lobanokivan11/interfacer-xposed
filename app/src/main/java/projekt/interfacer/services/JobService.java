@@ -523,9 +523,9 @@ public class JobService implements IXposedHookLoadPackage {
     private void handleOverlaySounds(String packageName, boolean enable) {
         if (!enable) {
             deleteRecursive(new File(SoundUtils.THEME_AUDIO_DIR));
-            SoundUtils.setDefaultAudible(getApplicationContext(), RingtoneManager.TYPE_RINGTONE);
-            SoundUtils.setDefaultAudible(getApplicationContext(), RingtoneManager.TYPE_NOTIFICATION);
-            SoundUtils.setDefaultAudible(getApplicationContext(), RingtoneManager.TYPE_ALARM);
+            SoundUtils.setDefaultAudible(this, RingtoneManager.TYPE_RINGTONE);
+            SoundUtils.setDefaultAudible(this, RingtoneManager.TYPE_NOTIFICATION);
+            SoundUtils.setDefaultAudible(this, RingtoneManager.TYPE_ALARM);
             return;
         }
         try {
