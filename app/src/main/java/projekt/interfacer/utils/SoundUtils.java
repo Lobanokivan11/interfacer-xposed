@@ -49,7 +49,38 @@ public class SoundUtilsXposed {
                     int type = (int) param.args[1];
                     Uri uri = (Uri) param.args[2];
                     log("Setting default ringtone for type " + type + " to " + uri);
-                    // logic
+                    try {
+                        String originalPath = uri != null ? uri.getPath() : null;
+                        if (originalPath != null && originalPath.startsWith("/system/")) {
+                            log("System sound detected, no replacement needed.");
+                            return;
+                        }
+                        String internalPath = null;
+                        switch (type) {
+                            case RingtoneManager.TYPE_RINGTONE:
+                                internalPath = RINGTONES_DIR + "ringtone.ogg";
+                                break;
+                            case RingtoneManager.TYPE_NOTIFICATION:
+                                internalPath = NOTIFICATIONS_DIR + "notification.ogg";
+                                break;
+                            case RingtoneManager.TYPE_ALARM:
+                                internalPath = ALARMS_DIR + "alarm.ogg";
+                                break;
+                            default:
+                                log("Unsupported sound type: " + type);
+                                return;
+                        }
+                        File internalSoundFile = new File(internalPath);
+                        if (!internalSoundFile.exists()) {
+                            log("Internal sound file not found: " + internalPath);
+                            return;
+                        }
+                        Uri internalUri = Uri.fromFile(internalSoundFile);
+                        param.args[2] = internalUri;
+                        log("Replaced URI with internal path: " + internalUri);
+                    } catch (Exception e) {
+                        log("Error replacing ringtone URI: " + e);
+                    }
                 }
             }
         );
