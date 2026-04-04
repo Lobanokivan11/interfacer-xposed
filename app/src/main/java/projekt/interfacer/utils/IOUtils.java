@@ -83,6 +83,10 @@ public class IOUtils implements IXposedHookLoadPackage {
     private static final String ALARMS_DIR = AUDIO_CACHE_DIR + "alarms/";
     private static final String RINGTONES_DIR = AUDIO_CACHE_DIR + "ringtones/";
     private static final String NOTIFICATIONS_DIR = AUDIO_CACHE_DIR + "notifications/";
+    public static final String SYSTEM_THEME_UI_SOUNDS_PATH = AUDIO_CACHE_DIR + "ui/";
+    public static final String SYSTEM_THEME_ALARM_PATH = AUDIO_CACHE_DIR + "alarms/";
+    public static final String SYSTEM_THEME_NOTIFICATION_PATH = AUDIO_CACHE_DIR + "notifications/";
+    public static final String SYSTEM_THEME_RINGTONE_PATH = AUDIO_CACHE_DIR + "ringtones/";
     private static final String BOOTANIMATION_CACHE = THEME_CACHE_DIR + "bootanimation.zip";
 
     public static void createDirIfNotExists(String dirPath) {
