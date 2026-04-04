@@ -210,6 +210,94 @@ public class JobService implements IXposedHookLoadPackage {
         return false;
     }
 
+    private void handleOverlayFonts(String packageName, boolean enable) {
+        if (!enable) {
+            deleteRecursive(new File(SoundUtilsXposed.THEME_FONTS_DIR));
+            return;
+        }
+        try {
+            Context overlayContext = getAppContext(packageName);
+            if (overlayContext == null) return;
+            File fontsDir = new File(SoundUtilsXposed.THEME_FONTS_DIR);
+            if (!fontsDir.exists()) fontsDir.mkdirs();
+            String[] fontFiles = overlayContext.getAssets().list("fonts");
+            if (fontFiles != null) {
+                for (String fontFile : fontFiles) {
+                    try (InputStream in = overlayContext.getAssets().open("fonts/" + fontFile);
+                        OutputStream out = new FileOutputStream(new File(fontsDir, fontFile))) {
+                        byte[] buf = new byte[8192];
+                        int len;
+                        while ((len = in.read(buf)) > 0) {
+                            out.write(buf, 0, len);
+                        }
+                    }
+                }
+            }
+            XposedHelpers.callStaticMethod(
+                android.graphics.Typeface.class,
+                "recreateDefaults"
+            );
+        } catch (Exception e) {
+            log("Error handling overlay fonts: " + e);
+        }
+    }
+
+    private void handleOverlaySounds(String packageName, boolean enable) {
+        if (!enable) {
+            deleteRecursive(new File(SoundUtilsXposed.THEME_AUDIO_DIR));
+            SoundUtilsXposed.setDefaultAudible(context, RingtoneManager.TYPE_RINGTONE);
+            SoundUtilsXposed.setDefaultAudible(context, RingtoneManager.TYPE_NOTIFICATION);
+            SoundUtilsXposed.setDefaultAudible(context, RingtoneManager.TYPE_ALARM);
+            return;
+        }
+        try {
+            Context overlayContext = getAppContext(packageName);
+            if (overlayContext == null) return;
+            File audioDir = new File(SoundUtilsXposed.THEME_AUDIO_DIR);
+            if (!audioDir.exists()) audioDir.mkdirs();
+            String[] audioTypes = {"ringtones", "notifications", "alarms", "ui"};
+            for (String type : audioTypes) {
+                String[] soundFiles = overlayContext.getAssets().list("audio/" + type);
+                if (soundFiles != null) {
+                    File typeDir = new File(audioDir, type);
+                    if (!typeDir.exists()) typeDir.mkdirs();
+                    for (String soundFile : soundFiles) {
+                        try (InputStream in = overlayContext.getAssets().open("audio/" + type + "/" + soundFile);
+                             OutputStream out = new FileOutputStream(new File(typeDir, soundFile))) {
+                            byte[] buf = new byte[8192];
+                            int len;
+                            while ((len = in.read(buf)) > 0) {
+                                out.write(buf, 0, len);
+                            }
+                        }
+                    }
+                }
+            }
+            applyOverlaySounds();
+        } catch (Exception e) {
+            log("Error handling overlay sounds: " + e);
+        }
+    }
+
+    private void applyOverlaySounds() {
+        File ringtone = new File(SoundUtilsXposed.RINGTONES_DIR + "ringtone.ogg");
+        if (ringtone.exists()) {
+            SoundUtilsXposed.setAudible(context, ringtone, RingtoneManager.TYPE_RINGTONE, "Substratum Ringtone");
+        }
+
+        File notification = new File(SoundUtilsXposed.NOTIFICATIONS_DIR + "notification.ogg");
+        if (notification.exists()) {
+            SoundUtilsXposed.setAudible(context, notification, RingtoneManager.TYPE_NOTIFICATION, "Substratum Notification");
+        }
+        File alarm = new File(SoundUtilsXposed.ALARMS_DIR + "alarm.ogg");
+        if (alarm.exists()) {
+            SoundUtilsXposed.setAudible(context, alarm, RingtoneManager.TYPE_ALARM, "Substratum Alarm");
+        }
+        SoundUtilsXposed.setUISounds(context.getContentResolver(), "lock_sound", SoundUtilsXposed.UI_SOUNDS_DIR + "lock_sound.ogg");
+        SoundUtilsXposed.setUISounds(context.getContentResolver(), "unlock_sound", SoundUtilsXposed.UI_SOUNDS_DIR + "unlock_sound.ogg");
+        SoundUtilsXposed.setUISounds(context.getContentResolver(), "low_battery_sound", SoundUtilsXposed.UI_SOUNDS_DIR + "low_battery.ogg");
+    }
+
     private void copyFonts(String pid, String zipFileName) {
         try {
             File cacheDir = new File(Environment.getDataDirectory(), "cache/FontCache/");
