@@ -16,6 +16,7 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
 
+import java.lang.reflect.Method;
 import java.io.File;
 import java.util.Arrays;
 
@@ -130,8 +131,15 @@ public class SoundUtils {
 
     public static boolean setUISounds(ContentResolver resolver, String soundName, String location) {
         if (allowedUISound(soundName)) {
-            Settings.Global.putStringForUser(resolver, soundName, location, -2);
-            return true;
+            try {
+                Method method = Settings.Global.class.getDeclaredMethod("putStringForUser", 
+                        ContentResolver.class, String.class, String.class, int.class);
+                method.invoke(null, resolver, soundName, location, -2); // -2 это USER_CURRENT
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return Settings.Global.putString(resolver, soundName, location);
+            }
         }
         return false;
     }
