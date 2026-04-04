@@ -242,6 +242,50 @@ public class JobService implements IXposedHookLoadPackage {
         }
     }
 
+    private Context getAppContext(String packageName) {
+        try {
+            return context.createPackageContext(packageName, Context.CONTEXT_IGNORE_SECURITY);
+        } catch (Exception e) {
+            log("Error getting overlay context: " + e);
+            return null;
+        }
+    }
+
+    private void deleteRecursive(File fileOrDir) {
+        if (fileOrDir.isDirectory()) {
+            for (File child : fileOrDir.listFiles()) {
+                deleteRecursive(child);
+            }
+        }
+        fileOrDir.delete();
+    }
+
+    private void handleOverlayBootanimation(String packageName, boolean enable) {
+        if (!enable) {
+            new File(SoundUtilsXposed.BOOTANIMATION_CACHE).delete();
+            return;
+        }
+        try {
+            Context overlayContext = getAppContext(packageName);
+            if (overlayContext == null) return;
+            try (InputStream in = overlayContext.getAssets().open("bootanimation.zip");
+                OutputStream out = new FileOutputStream(SoundUtilsXposed.BOOTANIMATION_CACHE)) {
+                byte[] buf = new byte[8192];
+                int len;
+                while ((len = in.read(buf)) > 0) {
+                    out.write(buf, 0, len);
+                }
+            }
+
+            XposedHelpers.callStaticMethod(
+                XposedHelpers.findClass("com.android.server.BootAnimation", null),
+                "start"
+            );
+        } catch (Exception e) {
+            log("Error handling overlay bootanimation: " + e);
+        }
+    }
+
     private void handleOverlaySounds(String packageName, boolean enable) {
         if (!enable) {
             deleteRecursive(new File(SoundUtilsXposed.THEME_AUDIO_DIR));
