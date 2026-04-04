@@ -29,8 +29,11 @@ android {
             def projectDir = project.projectDir
             def buildTypeDir = variant.buildType.name
             output.outputFileName = "themeinterfacer.apk"
-            def outputDirectory = new File("$projectDir/release_apk/$buildTypeDir")
-            output.outputDirectory = outputDirectory
+            def outputFileDir = new File("$projectDir/release_apk/$buildTypeDir")
+            if (!outputFileDir.exists()) {
+                outputFileDir.mkdirs()
+            }
+            output.outputFile = new File(outputFileDir, output.outputFileName)
         }
     }
 
