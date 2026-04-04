@@ -107,7 +107,7 @@ public class JobService implements IXposedHookLoadPackage {
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     String packageName = (String) param.args[0];
                     boolean enable = (boolean) param.args[1];
-                    if (isCallerAuthorized(Binder.getCallingUid())) {
+                    if (isCallerAuthorized(AndroidAppHelper.currentApplication(), Binder.getCallingUid())) {
                         log("Overlay " + packageName + " will be " + (enable ? "enabled" : "disabled"));
                         handleOverlayFonts(packageName, enable);
                         handleOverlaySounds(packageName, enable);
