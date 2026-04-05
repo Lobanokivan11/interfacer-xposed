@@ -57,12 +57,14 @@
                 android:resource="@xml/file_paths" />
         </provider>
         <service
-            android:name=".services.JobService"
+            android:name=".services.InterfacerService"
             android:exported="true"
             android:permission="projekt.interfacer.permission.ACCESS_SERVICE">
-            <intent-filter>
-                <action android:name="projekt.interfacer.INITIALIZE" />
-            </intent-filter>
+          <intent-filter>
+              <action android:name="projekt.interfacer.INITIALIZE" />
+              <action android:name="projekt.interfacer.APPLY_OVERLAYS" />
+              <action android:name="projekt.interfacer.APPLY_SOUNDS" />
+          </intent-filter>
         </service>
     </application>
 </manifest>
