@@ -108,7 +108,7 @@ public class JobService implements IXposedHookLoadPackage {
                     String packageName = (String) param.args[0];
                     boolean enable = (boolean) param.args[1];
                     Context context = AndroidAppHelper.currentApplication();
-                    if (isCallerAuthorized(AndroidAppHelper.currentApplication(), Binder.getCallingUid())) {
+                    if (isCallerAuthorized(Binder.getCallingUid())) {
                         log("Overlay " + packageName + " will be " + (enable ? "enabled" : "disabled"));
                         handleOverlayFonts(packageName, enable);
                         handleOverlaySounds(packageName, enable);
@@ -568,20 +568,20 @@ public class JobService implements IXposedHookLoadPackage {
     private void applyOverlaySounds() {
         File ringtone = new File(SoundUtils.RINGTONES_DIR + "ringtone.ogg");
         if (ringtone.exists()) {
-            SoundUtils.setAudible(context, ringtone, RingtoneManager.TYPE_RINGTONE, "Substratum Ringtone");
+            SoundUtils.setAudible(this, ringtone, RingtoneManager.TYPE_RINGTONE, "Substratum Ringtone");
         }
 
         File notification = new File(SoundUtils.NOTIFICATIONS_DIR + "notification.ogg");
         if (notification.exists()) {
-            SoundUtils.setAudible(context, notification, RingtoneManager.TYPE_NOTIFICATION, "Substratum Notification");
+            SoundUtils.setAudible(this, notification, RingtoneManager.TYPE_NOTIFICATION, "Substratum Notification");
         }
         File alarm = new File(SoundUtils.ALARMS_DIR + "alarm.ogg");
         if (alarm.exists()) {
-            SoundUtils.setAudible(context, alarm, RingtoneManager.TYPE_ALARM, "Substratum Alarm");
+            SoundUtils.setAudible(this, alarm, RingtoneManager.TYPE_ALARM, "Substratum Alarm");
         }
-        SoundUtils.setUISounds(getApplicationContext().getContentResolver(), "lock_sound", SoundUtils.UI_SOUNDS_DIR + "lock_sound.ogg");
-        SoundUtils.setUISounds(getApplicationContext().getContentResolver(), "unlock_sound", SoundUtils.UI_SOUNDS_DIR + "unlock_sound.ogg");
-        SoundUtils.setUISounds(getApplicationContext().getContentResolver(), "low_battery_sound", SoundUtils.UI_SOUNDS_DIR + "low_battery.ogg");
+        SoundUtils.setUISounds(getContentResolver(), "lock_sound", SoundUtils.UI_SOUNDS_DIR + "lock_sound.ogg");
+        SoundUtils.setUISounds(getContentResolver(), "unlock_sound", SoundUtils.UI_SOUNDS_DIR + "unlock_sound.ogg");
+        SoundUtils.setUISounds(getContentResolver(), "low_battery_sound", SoundUtils.UI_SOUNDS_DIR + "low_battery.ogg");
     }
 
     private void copyFonts(String pid, String zipFileName) {
