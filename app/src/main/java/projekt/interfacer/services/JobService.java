@@ -527,6 +527,17 @@ public class JobService implements IXposedHookLoadPackage {
         );
     }
 
+    private Context getContext() {
+        try {
+            Class<?> activityThreadClass = Class.forName("android.app.ActivityThread");
+            Object activityThread = XposedHelpers.callStaticMethod(activityThreadClass, "currentActivityThread");
+            return (Context) XposedHelpers.callMethod(activityThread, "getApplication");
+        } catch (Exception e) {
+            XposedBridge.log(e);
+            return null;
+        }
+    }
+
     private void handleOverlaySounds(String packageName, boolean enable) {
         if (!enable) {
             deleteRecursive(new File(SoundUtils.THEME_AUDIO_DIR));
