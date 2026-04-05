@@ -21,12 +21,11 @@ android {
     signingConfigs {
         release {
             storeFile file("../sign.keystore")
-            storePassword 369852
-            keyAlias lob
-            keyPassword 369852
+            storePassword "369852"
+            keyAlias "lob"
+            keyPassword "369852"
         }
     }
-
 
     compileOptions {
         incremental true
