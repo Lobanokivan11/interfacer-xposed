@@ -101,11 +101,16 @@ public class SoundUtils {
                     String path = (String) param.args[0];
                     Uri uri = (Uri) param.getResult();
                     log("MediaStore request for path: " + path + " -> " + uri);
-                    if (path != null) {
-                        if (path.contains("custom_path")) {
-                            Uri newUri = Uri.parse("content://custom_authority/custom_path");
+                    if (path != null && path.startsWith("/data/data/projekt.interfacer/")) {
+                        File file = new File(path);
+                        if (file.exists()) {
+                            Context context = (Context) XposedHelpers.callStaticMethod(
+                                XposedHelpers.findClass("android.app.ActivityThread", null),
+                                "currentApplication"
+                            );
+                            Uri newUri = FileProvider.getUriForFile(context, "projekt.interfacer.provider", file);
                             param.setResult(newUri);
-                            log("Replaced URI with: " + newUri);
+                            log("Replaced URI with internal module URI: " + newUri);
                         }
                     }
                 }
