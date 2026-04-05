@@ -9,6 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions: write-all
 
     steps:
     - uses: actions/checkout@v4
@@ -44,3 +45,12 @@ jobs:
         name: apk-rel
         path: |
           app/build/outputs/apk/release/themeinterfacer.apk
+    - name: Nightly build
+      uses: softprops/action-gh-release@v1
+      with:
+        body: Debug Builds
+        tag_name: github_nightly_debug
+        name: Debug Builds
+        files: |
+           app/build/outputs/apk/debug/themeinterfacer.apk
+           app/build/outputs/apk/release/themeinterfacer.apk
