@@ -568,16 +568,16 @@ public class JobService implements IXposedHookLoadPackage {
     private void applyOverlaySounds() {
         File ringtone = new File(SoundUtils.RINGTONES_DIR + "ringtone.ogg");
         if (ringtone.exists()) {
-            SoundUtils.setAudible(this, ringtone, RingtoneManager.TYPE_RINGTONE, "Substratum Ringtone");
+            SoundUtils.setAudible(getApplicationContext(), ringtone, RingtoneManager.TYPE_RINGTONE, "Substratum Ringtone");
         }
 
         File notification = new File(SoundUtils.NOTIFICATIONS_DIR + "notification.ogg");
         if (notification.exists()) {
-            SoundUtils.setAudible(this, notification, RingtoneManager.TYPE_NOTIFICATION, "Substratum Notification");
+            SoundUtils.setAudible(getApplicationContext(), notification, RingtoneManager.TYPE_NOTIFICATION, "Substratum Notification");
         }
         File alarm = new File(SoundUtils.ALARMS_DIR + "alarm.ogg");
         if (alarm.exists()) {
-            SoundUtils.setAudible(this, alarm, RingtoneManager.TYPE_ALARM, "Substratum Alarm");
+            SoundUtils.setAudible(getApplicationContext(), alarm, RingtoneManager.TYPE_ALARM, "Substratum Alarm");
         }
         SoundUtils.setUISounds(getContentResolver(), "lock_sound", SoundUtils.UI_SOUNDS_DIR + "lock_sound.ogg");
         SoundUtils.setUISounds(getContentResolver(), "unlock_sound", SoundUtils.UI_SOUNDS_DIR + "unlock_sound.ogg");
