@@ -311,21 +311,15 @@ public class IOUtils implements IXposedHookLoadPackage {
         if (DEBUG) XposedBridge.log(TAG + ": " + msg);
     }
 
-    private static boolean isCallerAuthorized(Context context, int uid) {
+    private boolean isCallerAuthorized(Context context, int uid) {
+        if (context == null) return false;
         String[] packages = context.getPackageManager().getPackagesForUid(uid);
         if (packages == null || packages.length == 0) return false;
-        String callingPackage = packages[0];
-        for (String AUTHORIZED_CALLER : AUTHORIZED_CALLERS) {
-            if (TextUtils.equals(callingPackage, AUTHORIZED_CALLER)) {
-                for (Signature AUTHORIZED_SIGNATURE : AUTHORIZED_SIGNATURES) {
-                    if (doSignaturesMatch(context, callingPackage, AUTHORIZED_SIGNATURE)) {
-                        log("\'" + callingPackage + "\' is an authorized calling package...");
-                        return true;
-                    }
-                }
+        for (String pkg : packages) {
+            if (SUBSTRATUM_PACKAGE.equals(pkg) || INTERFACER_PACKAGE.equals(pkg)) {
+                return true;
             }
         }
-        log("\'" + callingPackage + "\' is not an authorized calling package.");
         return false;
     }
 
