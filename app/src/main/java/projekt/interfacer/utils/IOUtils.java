@@ -302,7 +302,8 @@ public class IOUtils implements IXposedHookLoadPackage {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     String processName = (String) param.args[0];
-                    if ("com.android.systemui".equals(processName) && isCallerAuthorized(context, Binder.getCallingUid())) {
+                    Context context = getContext();
+                    if (context != null && "com.android.systemui".equals(processName) && isCallerAuthorized(context, Binder.getCallingUid())) {
                         log("Restarting SystemUI");
                     }
                 }
