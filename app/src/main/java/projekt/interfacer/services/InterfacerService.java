@@ -66,15 +66,12 @@ public class InterfacerService extends Service {
 
     private void applyOverlays() {
         Log.d(TAG, "Applying theme overlays...");
-
         try {
             Context context = getApplicationContext();
-
             File themeDir = new File(IOUtils.THEME_CACHE_DIR);
             if (!themeDir.exists()) {
                 themeDir.mkdirs();
             }
-
             try {
                 String[] assets = context.getAssets().list("themes");
                 if (assets != null) {
@@ -90,16 +87,26 @@ public class InterfacerService extends Service {
             } catch (IOException e) {
                 Log.e(TAG, "Error listing theme assets: " + e.getMessage());
             }
-
             try {
                 Object overlayManagerService = getSystemService("overlay");
                 if (overlayManagerService != null) {
                     Class<?> overlayManagerClass = Class.forName("android.service.om.IOverlayManager");
-                    Method setEnabled = overlayManagerClass.getMethod("setEnabled", String.class, boolean.class, int.class, int.class);
-                    setEnabled.invoke(overlayManagerService, "com.example.theme.overlay", true, 0, UserHandle.USER_CURRENT);
+                    Method getOverlayInfos = overlayManagerClass.getMethod("getOverlayInfos");
+                    Method setEnabled = overlayManagerClass.getMethod("setEnabled", String.class, boolean.class, int.class);
+                    Object overlayInfos = getOverlayInfos.invoke(overlayManagerService);
+                    if (overlayInfos != null) {
+                        java.util.List<?> overlayInfoList = (java.util.List<?>) overlayInfos;
+                        for (Object overlayInfo : overlayInfoList) {
+                            String packageName = (String) XposedHelpers.getObjectField(overlayInfo, "packageName");
+                            if (packageName != null) {
+                                setEnabled.invoke(overlayManagerService, packageName, true, UserHandle.USER_CURRENT);
+                                Log.d(TAG, "Enabled overlay: " + packageName);
+                            }
+                        }
+                    }
                 }
             } catch (Exception e) {
-                Log.e(TAG, "Error enabling overlay: " + e.getMessage());
+                Log.e(TAG, "Error enabling overlays: " + e.getMessage());
             }
         } catch (Exception e) {
             Log.e(TAG, "Error applying overlays: " + e.getMessage());
