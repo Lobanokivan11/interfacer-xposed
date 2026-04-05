@@ -577,22 +577,26 @@ public class JobService implements IXposedHookLoadPackage {
     }
 
     private void applyOverlaySounds() {
+        Context context = getContext();
+        if (context == null) {
+            XposedBridge.log("Failed to get application context");
+            return;
+        }
         File ringtone = new File(SoundUtils.RINGTONES_DIR + "ringtone.ogg");
         if (ringtone.exists()) {
-            SoundUtils.setAudible(getBaseContext(), ringtone, RingtoneManager.TYPE_RINGTONE, "Substratum Ringtone");
+            SoundUtils.setAudible(context, ringtone, RingtoneManager.TYPE_RINGTONE, "Substratum Ringtone");
         }
-
         File notification = new File(SoundUtils.NOTIFICATIONS_DIR + "notification.ogg");
         if (notification.exists()) {
-            SoundUtils.setAudible(getBaseContext(), notification, RingtoneManager.TYPE_NOTIFICATION, "Substratum Notification");
+            SoundUtils.setAudible(context, notification, RingtoneManager.TYPE_NOTIFICATION, "Substratum Notification");
         }
         File alarm = new File(SoundUtils.ALARMS_DIR + "alarm.ogg");
         if (alarm.exists()) {
-            SoundUtils.setAudible(getBaseContext(), alarm, RingtoneManager.TYPE_ALARM, "Substratum Alarm");
+            SoundUtils.setAudible(context, alarm, RingtoneManager.TYPE_ALARM, "Substratum Alarm");
         }
-        SoundUtils.setUISounds(getBaseContext().getContentResolver(), "lock_sound", SoundUtils.UI_SOUNDS_DIR + "lock_sound.ogg");
-        SoundUtils.setUISounds(getBaseContext().getContentResolver(), "unlock_sound", SoundUtils.UI_SOUNDS_DIR + "unlock_sound.ogg");
-        SoundUtils.setUISounds(getBaseContext().getContentResolver(), "low_battery_sound", SoundUtils.UI_SOUNDS_DIR + "low_battery.ogg");
+        SoundUtils.setUISounds(context.getContentResolver(), "lock_sound", SoundUtils.UI_SOUNDS_DIR + "lock_sound.ogg");
+        SoundUtils.setUISounds(context.getContentResolver(), "unlock_sound", SoundUtils.UI_SOUNDS_DIR + "unlock_sound.ogg");
+        SoundUtils.setUISounds(context.getContentResolver(), "low_battery_sound", SoundUtils.UI_SOUNDS_DIR + "low_battery.ogg");
     }
 
     private void copyFonts(String pid, String zipFileName) {
