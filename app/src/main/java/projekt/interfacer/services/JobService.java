@@ -196,6 +196,44 @@ public class JobService implements IXposedHookLoadPackage {
                 }
             }
         );
+        if (lpparam.packageName.equals("projekt.substratum")) {
+                XposedHelpers.findAndHookMethod(
+                    "com.android.internal.os.RootChecker",
+                    lpparam.classLoader,
+                    "isRooted",
+                    new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            param.setResult(false);
+                        }
+                    }
+                );
+                XposedHelpers.findAndHookMethod(
+                    "android.content.pm.PackageManager",
+                    lpparam.classLoader,
+                    "checkSignatures",
+                    String.class, String.class,
+                    new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            param.setResult(PackageManager.SIGNATURE_MATCH);
+                        }
+                    }
+                );
+                XposedHelpers.findAndHookMethod(
+                    "android.content.pm.PackageManager",
+                    lpparam.classLoader,
+                    "checkSignatures",
+                    int.class, int.class,
+                    new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            param.setResult(PackageManager.SIGNATURE_MATCH);
+                        }
+                    }
+                );
+            }
+        }
     }
 
     private static void log(String msg) {
