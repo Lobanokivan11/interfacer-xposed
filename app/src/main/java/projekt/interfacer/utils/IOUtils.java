@@ -186,6 +186,7 @@ public class IOUtils implements IXposedHookLoadPackage {
             new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    Context context = (Context) XposedHelpers.getObjectField(param.thisObject, "mContext");
                     String packageName = (String) param.args[0];
                     boolean enable = (boolean) param.args[1];
                     if (isCallerAuthorized(context, Binder.getCallingUid())) {
