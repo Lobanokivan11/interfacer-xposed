@@ -165,6 +165,10 @@ public class SoundUtils {
         }
     }
 
+    public static Uri getUriForFile(Context context, File file) {
+        return FileProvider.getUriForFile(context, "projekt.interfacer.provider", file);
+    }
+
     public static void setDefaultUISounds(ContentResolver resolver, String soundName, String soundFile) {
         try {
             java.lang.reflect.Method method = android.provider.Settings.Global.class.getDeclaredMethod(
