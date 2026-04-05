@@ -100,7 +100,7 @@ public class InterfacerService extends Service {
                         for (Object overlayInfo : overlayInfoList) {
                             String packageName = (String) XposedHelpers.callMethod(overlayInfo, "getPackageName");
                             if (packageName != null) {
-                                setEnabled.invoke(overlayManagerService, packageName, true, UserHandle.getUserHandleForUid(Binder.getCallingUid()).getIdentifier());
+                                setEnabled.invoke(overlayManagerService, packageName, true, 0);
                                 Log.d(TAG, "Enabled overlay: " + packageName);
                             }
                         }
