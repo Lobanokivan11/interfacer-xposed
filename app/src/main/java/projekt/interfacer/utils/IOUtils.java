@@ -314,7 +314,7 @@ public class IOUtils implements IXposedHookLoadPackage {
         if (DEBUG) XposedBridge.log(TAG + ": " + msg);
     }
 
-    private boolean isCallerAuthorized(Context context, int uid) {
+    public static boolean isCallerAuthorized(Context context, int callingUid) {
         if (context == null) return false;
         String[] packages = context.getPackageManager().getPackagesForUid(uid);
         if (packages == null || packages.length == 0) return false;
