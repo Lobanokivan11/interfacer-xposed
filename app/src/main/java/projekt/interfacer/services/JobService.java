@@ -100,9 +100,9 @@ public class JobService implements IXposedHookLoadPackage {
         if (lpparam.packageName.equals("android")) {
             hookSystemPackage(lpparam);
         }
-        else if (lpparam.packageName.equals("projekt.substratum")) {
-            hookSubstratumPackage(lpparam);
-        }
+//        else if (lpparam.packageName.equals("projekt.substratum")) {
+//            hookSubstratumPackage(lpparam);
+//        }
     }
 
     private void hookSystemPackage(XC_LoadPackage.LoadPackageParam lpparam) {
