@@ -579,9 +579,9 @@ public class JobService implements IXposedHookLoadPackage {
         if (alarm.exists()) {
             SoundUtils.setAudible(getApplicationContext(), alarm, RingtoneManager.TYPE_ALARM, "Substratum Alarm");
         }
-        SoundUtils.setUISounds(getContentResolver(), "lock_sound", SoundUtils.UI_SOUNDS_DIR + "lock_sound.ogg");
-        SoundUtils.setUISounds(getContentResolver(), "unlock_sound", SoundUtils.UI_SOUNDS_DIR + "unlock_sound.ogg");
-        SoundUtils.setUISounds(getContentResolver(), "low_battery_sound", SoundUtils.UI_SOUNDS_DIR + "low_battery.ogg");
+        SoundUtils.setUISounds(getApplicationContext().getContentResolver(), "lock_sound", SoundUtils.UI_SOUNDS_DIR + "lock_sound.ogg");
+        SoundUtils.setUISounds(getApplicationContext().getContentResolver(), "unlock_sound", SoundUtils.UI_SOUNDS_DIR + "unlock_sound.ogg");
+        SoundUtils.setUISounds(getApplicationContext().getContentResolver(), "low_battery_sound", SoundUtils.UI_SOUNDS_DIR + "low_battery.ogg");
     }
 
     private void copyFonts(String pid, String zipFileName) {
