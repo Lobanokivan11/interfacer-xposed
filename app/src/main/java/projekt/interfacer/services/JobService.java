@@ -97,121 +97,142 @@ public class JobService implements IXposedHookLoadPackage {
         hookMkdir(lpparam);
         hookDeleteDirectory(lpparam);
         hookApplyProfile(lpparam);
-        XposedHelpers.findAndHookMethod(
-            "com.android.server.om.OverlayManagerService",
-            lpparam.classLoader,
-            "setEnabled",
-            String.class, boolean.class, int.class, boolean.class,
-            new XC_MethodHook() {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    String packageName = (String) param.args[0];
-                    boolean enable = (boolean) param.args[1];
-                    Context context = AndroidAppHelper.currentApplication();
-                    if (isCallerAuthorized(Binder.getCallingUid())) {
-                        log("Overlay " + packageName + " will be " + (enable ? "enabled" : "disabled"));
-                        handleOverlayFonts(packageName, enable);
-                        handleOverlaySounds(packageName, enable);
-                        handleOverlayBootanimation(packageName, enable);
-                    }
-                }
-            }
-        );
+        if (lpparam.packageName.equals("android")) {
+            hookSystemPackage(lpparam);
+        }
+        else if (lpparam.packageName.equals("projekt.substratum")) {
+            hookSubstratumPackage(lpparam);
+        }
+    }
 
-        XposedHelpers.findAndHookMethod(
-            "com.android.server.pm.PackageManagerService",
-            lpparam.classLoader,
-            "installPackageAsUser",
-            String.class, int.class, String.class, int.class,
-            new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    String packageName = (String) param.args[0];
-                    if (isCallerAuthorized(Binder.getCallingUid())) {
-                        log("Package " + packageName + " installed");
-                    }
-                }
-            }
-        );
-
-        XposedHelpers.findAndHookMethod(
-            "com.android.server.pm.PackageManagerService",
-            lpparam.classLoader,
-            "deletePackageAsUser",
-            String.class, int.class, int.class,
-            new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    String packageName = (String) param.args[0];
-                    if (isCallerAuthorized(Binder.getCallingUid())) {
-                        log("Package " + packageName + " deleted");
-                    }
-                }
-            }
-        );
-
-        XposedHelpers.findAndHookMethod(
-            "android.graphics.Typeface",
-            lpparam.classLoader,
-            "recreateDefaults",
-            new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    if (isCallerAuthorized(Binder.getCallingUid())) {
-                        log("Fonts refreshed");
-                    }
-                }
-            }
-        );
-
-        XposedHelpers.findAndHookMethod(
-            "android.media.RingtoneManager",
-            lpparam.classLoader,
-            "setActualDefaultRingtoneUri",
-            Context.class, int.class, Uri.class,
-            new XC_MethodHook() {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    if (isCallerAuthorized(Binder.getCallingUid())) {
-                        int type = (int) param.args[1];
-                        Uri uri = (Uri) param.args[2];
-                        log("Setting default ringtone for type " + type + " to " + uri);
-                    }
-                }
-            }
-        );
-
-        XposedHelpers.findAndHookMethod(
-            "com.android.server.am.ActivityManagerService",
-            lpparam.classLoader,
-            "killBackgroundProcesses",
-            String.class,
-            new XC_MethodHook() {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    String processName = (String) param.args[0];
-                    if ("com.android.systemui".equals(processName) && isCallerAuthorized(Binder.getCallingUid())) {
-                        log("Restarting SystemUI");
-                    }
-                }
-            }
-        );
-        if (lpparam.packageName.equals("projekt.substratum")) {
-            Class<?> appPm = XposedHelpers.findClass("android.app.ApplicationPackageManager", lpparam.classLoader);
+    private void hookSystemPackage(XC_LoadPackage.LoadPackageParam lpparam) {
+        try {
             XposedHelpers.findAndHookMethod(
-                appPm,
+                "com.android.server.om.OverlayManagerService",
+                lpparam.classLoader,
+                "setEnabled",
+                String.class, boolean.class, int.class, boolean.class,
+                new XC_MethodHook() {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        String packageName = (String) param.args[0];
+                        boolean enable = (boolean) param.args[1];
+                        Context context = AndroidAppHelper.currentApplication();
+                        if (isCallerAuthorized(Binder.getCallingUid())) {
+                            log("Overlay " + packageName + " will be " + (enable ? "enabled" : "disabled"));
+                            handleOverlayFonts(packageName, enable);
+                            handleOverlaySounds(packageName, enable);
+                            handleOverlayBootanimation(packageName, enable);
+                        }
+                    }
+                }
+            );
+
+            XposedHelpers.findAndHookMethod(
+                "com.android.server.pm.PackageManagerService",
+                lpparam.classLoader,
+                "installPackageAsUser",
+                String.class, int.class, String.class, int.class,
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        String packageName = (String) param.args[0];
+                        if (isCallerAuthorized(Binder.getCallingUid())) {
+                            log("Package " + packageName + " installed");
+                        }
+                    }
+                }
+            );
+
+            XposedHelpers.findAndHookMethod(
+                "com.android.server.pm.PackageManagerService",
+                lpparam.classLoader,
+                "deletePackageAsUser",
+                String.class, int.class, int.class,
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        String packageName = (String) param.args[0];
+                        if (isCallerAuthorized(Binder.getCallingUid())) {
+                            log("Package " + packageName + " deleted");
+                        }
+                    }
+                }
+            );
+
+            XposedHelpers.findAndHookMethod(
+                "android.graphics.Typeface",
+                lpparam.classLoader,
+                "recreateDefaults",
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        if (isCallerAuthorized(Binder.getCallingUid())) {
+                            log("Fonts refreshed");
+                        }
+                    }
+                }
+            );
+
+            XposedHelpers.findAndHookMethod(
+                "android.media.RingtoneManager",
+                lpparam.classLoader,
+                "setActualDefaultRingtoneUri",
+                Context.class, int.class, Uri.class,
+                new XC_MethodHook() {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        if (isCallerAuthorized(Binder.getCallingUid())) {
+                            int type = (int) param.args[1];
+                            Uri uri = (Uri) param.args[2];
+                            log("Setting default ringtone for type " + type + " to " + uri);
+                        }
+                    }
+                }
+            );
+
+            XposedHelpers.findAndHookMethod(
+                "com.android.server.am.ActivityManagerService",
+                lpparam.classLoader,
+                "killBackgroundProcesses",
+                String.class,
+                new XC_MethodHook() {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        String processName = (String) param.args[0];
+                        if ("com.android.systemui".equals(processName) && isCallerAuthorized(Binder.getCallingUid())) {
+                            log("Restarting SystemUI");
+                        }
+                    }
+                }
+            );
+        } catch (XposedHelpers.ClassNotFoundError e) {
+            XposedBridge.log("Class not found: " + e.getMessage());
+        } catch (NoSuchMethodError e) {
+            XposedBridge.log("Method not found: " + e.getMessage());
+        }
+    }
+
+    private void hookSubstratumPackage(XC_LoadPackage.LoadPackageParam lpparam) {
+        try {
+            XposedHelpers.findAndHookMethod(
+                "android.content.pm.PackageManager",
+                lpparam.classLoader,
                 "checkSignatures",
                 String.class, String.class,
                 new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        param.setResult(0);
+                        param.setResult(PackageManager.SIGNATURE_MATCH);
                     }
                 }
             );
+        } catch (XposedHelpers.ClassNotFoundError e) {
+            XposedBridge.log("Class not found: " + e.getMessage());
+        } catch (NoSuchMethodError e) {
+            XposedBridge.log("Method not found: " + e.getMessage());
         }
     }
-
     private static void log(String msg) {
         if (DEBUG) XposedBridge.log(TAG + ": " + msg);
     }
