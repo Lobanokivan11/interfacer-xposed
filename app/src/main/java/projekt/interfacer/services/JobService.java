@@ -145,7 +145,7 @@ public class JobService implements IXposedHookLoadPackage {
             );
 
             XposedHelpers.findAndHookMethod(
-                "com.android.server.pm.PackageManagerService",
+                "android.app.ApplicationPackageManager",
                 lpparam.classLoader,
                 "deletePackageAsUser",
                 String.class, int.class, int.class,
