@@ -314,16 +314,11 @@ public class IOUtils implements IXposedHookLoadPackage {
         if (DEBUG) XposedBridge.log(TAG + ": " + msg);
     }
 
-    public static boolean isCallerAuthorized(Context context, int callingUid) {
-        if (context == null) return false;
+    public static boolean isCallerAuthorized(Context context, int uid) {
         String[] packages = context.getPackageManager().getPackagesForUid(uid);
         if (packages == null || packages.length == 0) return false;
-        for (String pkg : packages) {
-            if (SUBSTRATUM_PACKAGE.equals(pkg) || INTERFACER_PACKAGE.equals(pkg)) {
-                return true;
-            }
-        }
-        return false;
+        String callingPackage = packages[0];
+        return callingPackage.equals("projekt.substratum") || callingPackage.equals("projekt.interfacer");
     }
 
     private static boolean doSignaturesMatch(Context context, String packageName, Signature signature) {
