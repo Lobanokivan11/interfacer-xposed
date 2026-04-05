@@ -101,7 +101,13 @@ public class SoundUtils {
                     String path = (String) param.args[0];
                     Uri uri = (Uri) param.getResult();
                     log("MediaStore request for path: " + path + " -> " + uri);
-                    // logic
+                    if (path != null) {
+                        if (path.contains("custom_path")) {
+                            Uri newUri = Uri.parse("content://custom_authority/custom_path");
+                            param.setResult(newUri);
+                            log("Replaced URI with: " + newUri);
+                        }
+                    }
                 }
             }
         );
