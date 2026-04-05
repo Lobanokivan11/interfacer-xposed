@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.IBinder;
-import android.provider.Settings;
 import android.os.UserHandle;
+import android.provider.Settings;
 import android.util.Log;
 import java.io.File;
 import java.io.FileInputStream;
@@ -66,31 +66,37 @@ public class InterfacerService extends Service {
 
     private void applyOverlays() {
         Log.d(TAG, "Applying theme overlays...");
+
         try {
             Context context = getApplicationContext();
+
             File themeDir = new File(IOUtils.THEME_CACHE_DIR);
             if (!themeDir.exists()) {
                 themeDir.mkdirs();
             }
+
             try {
                 String[] assets = context.getAssets().list("themes");
                 if (assets != null) {
                     for (String asset : assets) {
-                        InputStream in = context.getAssets().open("themes/" + asset);
-                        File outFile = new File(themeDir, asset);
-                        IOUtils.bufferedCopy(in, outFile);
-                        in.close();
+                        try (InputStream in = context.getAssets().open("themes/" + asset)) {
+                            File outFile = new File(themeDir, asset);
+                            IOUtils.bufferedCopy(in, outFile);
+                        } catch (IOException e) {
+                            Log.e(TAG, "Error copying theme file: " + asset + ", " + e.getMessage());
+                        }
                     }
                 }
             } catch (IOException e) {
-                Log.e(TAG, "Error copying theme files: " + e.getMessage());
+                Log.e(TAG, "Error listing theme assets: " + e.getMessage());
             }
+
             try {
                 Object overlayManagerService = getSystemService("overlay");
                 if (overlayManagerService != null) {
                     Class<?> overlayManagerClass = Class.forName("android.service.om.IOverlayManager");
                     Method setEnabled = overlayManagerClass.getMethod("setEnabled", String.class, boolean.class, int.class, int.class);
-                    setEnabled.invoke(overlayManagerService, "com.example.theme.overlay", true, UserHandle.myUserId(), 0);
+                    setEnabled.invoke(overlayManagerService, "com.example.theme.overlay", true, 0, UserHandle.USER_CURRENT);
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Error enabling overlay: " + e.getMessage());
@@ -102,30 +108,38 @@ public class InterfacerService extends Service {
 
     private void applySounds() {
         Log.d(TAG, "Applying sounds...");
+
         try {
             Context context = getApplicationContext();
-            IOUtils.applyOverlaySounds();
+
             File ringtoneFile = new File(IOUtils.RINGTONES_DIR + "ringtone.ogg");
             if (ringtoneFile.exists()) {
                 Uri ringtoneUri = Uri.fromFile(ringtoneFile);
                 RingtoneManager.setActualDefaultRingtoneUri(context, RingtoneManager.TYPE_RINGTONE, ringtoneUri);
             }
+
             File notificationFile = new File(IOUtils.NOTIFICATIONS_DIR + "notification.ogg");
             if (notificationFile.exists()) {
                 Uri notificationUri = Uri.fromFile(notificationFile);
                 RingtoneManager.setActualDefaultRingtoneUri(context, RingtoneManager.TYPE_NOTIFICATION, notificationUri);
             }
+
             File alarmFile = new File(IOUtils.ALARMS_DIR + "alarm.ogg");
             if (alarmFile.exists()) {
                 Uri alarmUri = Uri.fromFile(alarmFile);
                 RingtoneManager.setActualDefaultRingtoneUri(context, RingtoneManager.TYPE_ALARM, alarmUri);
             }
-            Settings.System.putString(context.getContentResolver(), Settings.System.LOCK_SOUND,
-                IOUtils.UI_SOUNDS_DIR + "lock_sound.ogg");
-            Settings.System.putString(context.getContentResolver(), Settings.System.UNLOCK_SOUND,
-                IOUtils.UI_SOUNDS_DIR + "unlock_sound.ogg");
-            Settings.System.putString(context.getContentResolver(), Settings.System.LOW_BATTERY_SOUND,
-                IOUtils.UI_SOUNDS_DIR + "low_battery.ogg");
+
+            try {
+                Settings.System.putString(context.getContentResolver(), "lock_sound",
+                    IOUtils.UI_SOUNDS_DIR + "lock_sound.ogg");
+                Settings.System.putString(context.getContentResolver(), "unlock_sound",
+                    IOUtils.UI_SOUNDS_DIR + "unlock_sound.ogg");
+                Settings.System.putString(context.getContentResolver(), "low_battery_sound",
+                    IOUtils.UI_SOUNDS_DIR + "low_battery.ogg");
+            } catch (Exception e) {
+                Log.e(TAG, "Error setting UI sounds: " + e.getMessage());
+            }
         } catch (Exception e) {
             Log.e(TAG, "Error applying sounds: " + e.getMessage());
         }
