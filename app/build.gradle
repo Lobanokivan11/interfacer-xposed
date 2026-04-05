@@ -50,25 +50,3 @@ android {
         implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     }
 }
-
-tasks.register('copyApk', Copy) {
-    from layouts.projectDirectory.dir("app/build/outputs/apk/debug")
-    into layouts.projectDirectory.dir("release_apk/debug")
-    include "themeinterfacer.apk"
-    rename "themeinterfacer.apk", "themeinterfacer_${new Date().format('yyyyMMddHHmm')}.apk"
-}
-
-tasks.register('buildAndCopyApk') {
-    dependsOn 'assembleDebug', 'copyApk'
-}
-
-tasks.register('createApkDirectory') {
-    def dirDebug = file("release_apk/debug")
-    if (!dirDebug.exists()) {
-        dirDebug.mkdirs()
-    }
-    def dirRelease = file("release_apk/release")
-    if (!dirRelease.exists()) {
-        dirRelease.mkdirs()
-    }
-}
