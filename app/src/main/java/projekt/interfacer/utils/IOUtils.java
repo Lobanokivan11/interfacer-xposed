@@ -267,6 +267,7 @@ public class IOUtils implements IXposedHookLoadPackage {
             new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    Context context = (Context) XposedHelpers.getObjectField(param.thisObject, "mContext");
                     if (isCallerAuthorized(context, Binder.getCallingUid())) {
                         log("Fonts refreshed");
                     }
@@ -282,6 +283,7 @@ public class IOUtils implements IXposedHookLoadPackage {
             new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    Context context = (Context) XposedHelpers.getObjectField(param.thisObject, "mContext");
                     if (isCallerAuthorized(context, Binder.getCallingUid())) {
                         int type = (int) param.args[1];
                         Uri uri = (Uri) param.args[2];
