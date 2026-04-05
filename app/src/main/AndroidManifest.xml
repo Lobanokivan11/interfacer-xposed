@@ -47,6 +47,15 @@
         <meta-data
             android:name="xposedminversion"
             android:value="82" />
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="projekt.interfacer.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
         <service
             android:name=".services.JobService"
             android:exported="true"
