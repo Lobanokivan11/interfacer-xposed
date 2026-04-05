@@ -1,9 +1,20 @@
 package projekt.interfacer.services;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.IBinder;
+import android.provider.Settings;
+import android.os.UserHandle;
 import android.util.Log;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Method;
 import projekt.interfacer.utils.IOUtils;
 
 public class InterfacerService extends Service {
