@@ -25,17 +25,8 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
 
-    - name: Build and Copy APK
-      run: ./gradlew buildAndCopyApk
-
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
         name: build-artifacts
         path: app/build/
-
-    - name: Upload APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: apk
-        path: release_apk/**/*.apk
