@@ -3,7 +3,7 @@
  * Xposed adaptation for Substratum-like theming (internal only)
  */
 
-package projekt.interfacer.services;
+package projekt.interfacer.utils;
 
 import android.content.Context;
 import android.content.Intent;
