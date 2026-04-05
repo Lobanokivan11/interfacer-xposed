@@ -90,7 +90,7 @@ public class InterfacerService extends Service {
                 if (overlayManagerService != null) {
                     Class<?> overlayManagerClass = Class.forName("android.service.om.IOverlayManager");
                     Method setEnabled = overlayManagerClass.getMethod("setEnabled", String.class, boolean.class, int.class, int.class);
-                    setEnabled.invoke(overlayManagerService, "com.example.theme.overlay", true, UserHandle.USER_CURRENT, 0);
+                    setEnabled.invoke(overlayManagerService, "com.example.theme.overlay", true, UserHandle.myUserId(), 0);
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Error enabling overlay: " + e.getMessage());
