@@ -129,7 +129,7 @@ public class JobService implements IXposedHookLoadPackage {
             );
 
             XposedHelpers.findAndHookMethod(
-                "com.android.server.pm.PackageManagerService",
+                "android.app.ApplicationPackageManager",
                 lpparam.classLoader,
                 "installPackageAsUser",
                 String.class, int.class, String.class, int.class,
@@ -527,7 +527,7 @@ public class JobService implements IXposedHookLoadPackage {
 
     private void hookUninstallPackage(XC_LoadPackage.LoadPackageParam lpparam) {
         XposedHelpers.findAndHookMethod(
-            "com.android.server.pm.PackageManagerService",
+            "android.app.ApplicationPackageManager",
             lpparam.classLoader,
             "deletePackageAsUser",
             String.class, int.class, int.class,
@@ -543,7 +543,7 @@ public class JobService implements IXposedHookLoadPackage {
 
     private void hookInstallPackage(XC_LoadPackage.LoadPackageParam lpparam) {
         XposedHelpers.findAndHookMethod(
-            "com.android.server.pm.PackageManagerService",
+            "android.app.ApplicationPackageManager",
             lpparam.classLoader,
             "installPackageAsUser",
             String.class, int.class, String.class, int.class,
