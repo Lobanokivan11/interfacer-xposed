@@ -197,42 +197,18 @@ public class JobService implements IXposedHookLoadPackage {
             }
         );
         if (lpparam.packageName.equals("projekt.substratum")) {
-                XposedHelpers.findAndHookMethod(
-                    "com.android.internal.os.RootChecker",
-                    lpparam.classLoader,
-                    "isRooted",
-                    new XC_MethodHook() {
-                        @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            param.setResult(false);
-                        }
+            Class<?> appPm = XposedHelpers.findClass("android.app.ApplicationPackageManager", lpparam.classLoader);
+            XposedHelpers.findAndHookMethod(
+                appPm,
+                "checkSignatures",
+                String.class, String.class,
+                new XC_MethodHook() {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        param.setResult(0);
                     }
-                );
-                XposedHelpers.findAndHookMethod(
-                    "android.content.pm.PackageManager",
-                    lpparam.classLoader,
-                    "checkSignatures",
-                    String.class, String.class,
-                    new XC_MethodHook() {
-                        @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            param.setResult(PackageManager.SIGNATURE_MATCH);
-                        }
-                    }
-                );
-                XposedHelpers.findAndHookMethod(
-                    "android.content.pm.PackageManager",
-                    lpparam.classLoader,
-                    "checkSignatures",
-                    int.class, int.class,
-                    new XC_MethodHook() {
-                        @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            param.setResult(PackageManager.SIGNATURE_MATCH);
-                        }
-                    }
-                );
-            }
+                }
+            );
         }
     }
 
