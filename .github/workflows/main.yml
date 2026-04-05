@@ -52,5 +52,4 @@ jobs:
         tag_name: github_nightly_debug
         name: Debug Builds
         files: |
-           app/build/outputs/apk/debug/themeinterfacer.apk
            app/build/outputs/apk/release/themeinterfacer.apk
