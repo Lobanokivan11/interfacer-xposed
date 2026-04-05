@@ -30,3 +30,17 @@ jobs:
       with:
         name: build-artifacts
         path: app/build/
+
+    - name: Upload debug apk
+      uses: actions/upload-artifact@v4
+      with:
+        name: apk-debug
+        path: |
+          app/build/outputs/apk/debug/themeinterfacer.apk
+
+    - name: Upload release apk
+      uses: actions/upload-artifact@v4
+      with:
+        name: apk-rel
+        path: |
+          app/build/outputs/apk/release/themeinterfacer.apk
